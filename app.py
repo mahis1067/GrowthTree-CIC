@@ -1,28 +1,25 @@
-from flask import Flask, render_template, request, redirect, url_for, session
-import json
-from datetime import datetime
-import os
-
-app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), 'template'), static_folder=os.path.join(os.path.dirname(__file__), 'static'))
-app.secret_key = "cic_secret_key"
-
-# Load service data
-script_dir = os.path.dirname(os.path.abspath(__file__))
-with open(os.path.join(script_dir, "info.json")) as f:
-    SERVICES = json.load(f)
+from flask import Flask, jsonify, redirect, render_template, request, url_for, session
 
 
-# -------------------------
-# HOME
-# -------------------------
-@app.route("/")
+app = Flask(__name__)
+
+
+
+@app.route ('/', methods=["GET", "POST"])
+def index():
+    if request.method == "POST":
+        prompt = request.form.get("prompt")
+        print (prompt)
+        return render_template("index.html")
+    else:
+        return render_template("index.html")
+
+
+@app.route('/home')
 def home():
-    return render_template("home.html")
+    name = session.get('name', 'Guest')  
+    return render_template('home.html', name=name)
 
-
-# -------------------------
-# QUIZ
-# -------------------------
 @app.route("/quiz", methods=["GET", "POST"])
 def quiz():
     if request.method == "POST":
@@ -33,10 +30,6 @@ def quiz():
 
     return render_template("quiz.html")
 
-
-# -------------------------
-# GROWTH TREE LOGIC
-# -------------------------
 def generate_growth_tree(answers):
     tree = {
         "year1": [],

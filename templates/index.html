@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CIC Growth Tree</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>CIC Growth</h2>
+        <a href="{{ url_for('home') }}">Dashboard</a>
+        <a href="{{ url_for('quiz') }}">Take Quiz</a>
+        <a href="{{ url_for('tree') }}">Growth Tree</a>
+        <a href="{{ url_for('services') }}">Services</a>
+        <a href="{{ url_for('tier') }}">My Tier</a>
+        <a href="{{ url_for('invoice') }}">Invoice</a>
+        <hr style="width:100%; margin: 20px 0;">
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            {% block content %}
+            <h1>Welcome to CIC Growth Tree</h1>
+            <p>Select an option from the sidebar to get started.</p>
+            {% endblock %}
+        </div>
+    </div>
+
+</body>
+</html>
