@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CIC Growth Tree{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <aside class="sidebar">
+        <h2>CIC Growth Tree</h2>
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('quiz') }}">Personalization Quiz</a>
+        <a href="{{ url_for('tree') }}">Growth Tree</a>
+        <a href="{{ url_for('services') }}">Services</a>
+        <a href="{{ url_for('tier') }}">Tier Meter</a>
+        <a href="{{ url_for('invoice') }}">Invoice</a>
+    </aside>
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
