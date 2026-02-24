@@ -1,18 +1,21 @@
 {% extends "base.html" %}
-
-{% block title %}Services - GrowthTree{% endblock %}
-
+{% block title %}Services - CIC{% endblock %}
 {% block content %}
-<div class="services-container">
-    <h1>Our Services</h1>
-    
-    {% for service in services %}
-    <div class="service-card">
-        <h3>{{ service.title }}</h3>
-        <p>{{ service.description }}</p>
-        <p class="price">${{ service.price }}</p>
-        <a href="{{ url_for(''buy'', service_name=service.title) }}" class="btn btn-primary">Purchase</a>
+<section class="card">
+    <h1>Additional Services</h1>
+    <div class="service-list">
+        {% for service in services %}
+        <article class="service-card">
+            <h3>{{ service.title }}</h3>
+            <p>{{ service.description }}</p>
+            <p><strong>${{ service.price }}</strong></p>
+            {% if service.title in purchased %}
+                <span class="owned">Purchased</span>
+            {% else %}
+                <a class="btn" href="{{ url_for('buy', service_name=service.title, next=url_for('services')) }}">Add to Tree</a>
+            {% endif %}
+        </article>
+        {% endfor %}
     </div>
-    {% endfor %}
-</div>
+</section>
 {% endblock %}

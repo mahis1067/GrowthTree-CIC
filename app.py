@@ -1,121 +1,191 @@
-from flask import Flask, jsonify, redirect, render_template, request, url_for, session
+import json
+from pathlib import Path
+
+from flask import Flask, redirect, render_template, request, session, url_for
 
 
 app = Flask(__name__)
+app.secret_key = "cic-growth-tree-dev"
 
 
+DATA_PATH = Path(__file__).with_name("info.json")
 
-@app.route ('/', methods=["GET", "POST"])
-def index():
-    if request.method == "POST":
-        prompt = request.form.get("prompt")
-        print (prompt)
-        return render_template("index.html")
+
+def load_services():
+    with DATA_PATH.open("r", encoding="utf-8") as file:
+        return json.load(file)
+
+
+SERVICES = load_services()
+SERVICES_BY_TITLE = {service["title"]: service for service in SERVICES}
+
+
+def default_tree():
+    return {"year1": [], "year2": [], "year3": []}
+
+
+def add_service_to_tree(tree, service_name):
+    all_services = set(tree["year1"] + tree["year2"] + tree["year3"])
+    if service_name in all_services:
+        return tree
+
+    year_targets = ["year1", "year2", "year3"]
+    target_year = min(year_targets, key=lambda y: len(tree[y]))
+    tree[target_year].append(service_name)
+    return tree
+
+
+def merge_purchased_into_tree(tree, purchased):
+    for service_name in purchased:
+        tree = add_service_to_tree(tree, service_name)
+    return tree
+
+
+def generate_growth_tree(answers):
+    tree = default_tree()
+    org = answers.get("organization")
+    goal = answers.get("goal")
+    scale = answers.get("revenue")
+
+    if org in {"Business", "Municipality/Government"}:
+        tree["year1"].extend(["Access Information", "Stay Informed"])
+    elif org == "Public Institution":
+        tree["year1"].extend(["Access Information", "Multi-Sectoral Perspectives"])
+    elif org == "Association/Non-Profit":
+        tree["year1"].extend(["Networking Forum", "Multi-Sectoral Perspectives"])
     else:
-        return render_template("index.html")
+        tree["year1"].extend(["Reduced Rates", "Stay Informed"])
+
+    if goal == "Influence policy":
+        tree["year2"].append("Influence")
+    elif goal == "Build network":
+        tree["year2"].append("Networking Forum")
+    else:
+        tree["year2"].append("Access Information")
+
+    if scale in {"$500k-$2M", "$2M+"}:
+        tree["year3"].append("Voting Privileges")
+    else:
+        tree["year3"].append("Reduced Rates")
+
+    for year in tree:
+        tree[year] = list(dict.fromkeys(tree[year]))
+
+    purchased = session.get("purchased", [])
+    return merge_purchased_into_tree(tree, purchased)
 
 
-@app.route('/home')
-def home():
-    name = session.get('name', 'Guest')  
-    return render_template('home.html', name=name)
+def calculate_tier():
+    years_with_cic = int(session.get("membership_years", 0))
+    purchased_count = len(session.get("purchased", []))
+
+    if years_with_cic >= 3 or purchased_count >= 6:
+        return "Gold"
+    if years_with_cic >= 2 or purchased_count >= 3:
+        return "Silver"
+    if years_with_cic >= 1 or purchased_count >= 1:
+        return "Bronze"
+    return "New Member"
+
+
+def tier_progress_percent():
+    tier = calculate_tier()
+    return {"New Member": 10, "Bronze": 35, "Silver": 68, "Gold": 100}[tier]
+
+
+def purchased_details():
+    purchased = session.get("purchased", [])
+    details = [SERVICES_BY_TITLE[name] for name in purchased if name in SERVICES_BY_TITLE]
+    return details
+
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
 
 @app.route("/quiz", methods=["GET", "POST"])
 def quiz():
     if request.method == "POST":
-        answers = request.form
+        answers = request.form.to_dict()
         session["quiz_answers"] = answers
-        generate_growth_tree(answers)
+        session["membership_years"] = answers.get("years_with_cic", "0")
+        session["growth_tree"] = generate_growth_tree(answers)
+
+        new_tier = calculate_tier()
+        previous = session.get("tier")
+        session["tier"] = new_tier
+        if previous and previous != new_tier:
+            session["celebration"] = f"Congratulations! You advanced from {previous} to {new_tier} tier."
+
         return redirect(url_for("tree"))
 
-    return render_template("quiz.html")
-
-def generate_growth_tree(answers):
-    tree = {
-        "year1": [],
-        "year2": [],
-        "year3": []
-    }
-
-    # Example Decision Logic
-    if answers.get("organization") == "Business":
-        tree["year1"].append("Research Access")
-        tree["year1"].append("Networking Forum")
-
-    if answers.get("involvement") == "Lead discussions":
-        tree["year2"].append("Advisory Committee")
-
-    if answers.get("goal") == "Influence circular economy policy":
-        tree["year3"].append("Governance Voting Rights")
-
-    session["growth_tree"] = tree
+    return render_template("quiz.html", answers=session.get("quiz_answers", {}))
 
 
-# -------------------------
-# TREE PAGE
-# -------------------------
 @app.route("/tree")
 def tree():
-    tree = session.get("growth_tree", {})
-    tier = calculate_tier()
-    return render_template("tree.html", tree=tree, tier=tier)
+    tree_data = session.get("growth_tree", default_tree())
+    tree_data = merge_purchased_into_tree(tree_data, session.get("purchased", []))
+    session["growth_tree"] = tree_data
+
+    celebration = session.pop("celebration", None)
+    return render_template(
+        "tree.html",
+        tree=tree_data,
+        tier=calculate_tier(),
+        progress=tier_progress_percent(),
+        services_map=SERVICES_BY_TITLE,
+        celebration=celebration,
+    )
 
 
-# -------------------------
-# SERVICES PAGE
-# -------------------------
 @app.route("/services")
 def services():
-    return render_template("services.html", services=SERVICES)
+    purchased = set(session.get("purchased", []))
+    return render_template("services.html", services=SERVICES, purchased=purchased)
 
 
 @app.route("/buy/<service_name>")
 def buy(service_name):
-    if "purchased" not in session:
-        session["purchased"] = []
+    if service_name not in SERVICES_BY_TITLE:
+        return redirect(url_for("services"))
 
-    session["purchased"].append(service_name)
-    session.modified = True
-
-    return redirect(url_for("tree"))
-
-
-# -------------------------
-# TIER SYSTEM
-# -------------------------
-def calculate_tier():
     purchased = session.get("purchased", [])
-    years = len(purchased)
+    if service_name not in purchased:
+        purchased.append(service_name)
+    session["purchased"] = purchased
 
-    if years >= 6:
-        return "Gold"
-    elif years >= 3:
-        return "Silver"
-    elif years >= 1:
-        return "Bronze"
-    else:
-        return "New Member"
+    tree_data = session.get("growth_tree", default_tree())
+    if service_name not in tree_data["year1"] + tree_data["year2"] + tree_data["year3"]:
+        tree_data = add_service_to_tree(tree_data, service_name)
+    session["growth_tree"] = merge_purchased_into_tree(tree_data, purchased)
+
+    old_tier = session.get("tier")
+    new_tier = calculate_tier()
+    session["tier"] = new_tier
+    if old_tier and old_tier != new_tier:
+        session["celebration"] = f"Great work! You reached {new_tier} tier."
+
+    return redirect(request.args.get("next") or url_for("tree"))
 
 
 @app.route("/tier")
 def tier():
-    tier = calculate_tier()
-    return render_template("tier.html", tier=tier)
+    return render_template(
+        "tier.html",
+        tier=calculate_tier(),
+        progress=tier_progress_percent(),
+        purchased_count=len(session.get("purchased", [])),
+        years_with_cic=session.get("membership_years", "0"),
+    )
 
 
-# -------------------------
-# INVOICE
-# -------------------------
 @app.route("/invoice")
 def invoice():
-    purchased = session.get("purchased", [])
-    total = 0
-
-    for service in SERVICES:
-        if service["title"] in purchased:
-            total += service["price"]
-
-    return render_template("invoice.html", purchased=purchased, total=total)
+    items = purchased_details()
+    total = sum(item["price"] for item in items)
+    return render_template("invoice.html", items=items, total=total)
 
 
 if __name__ == "__main__":
