@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz - GrowthTree{% endblock %}
+
+{% block content %}
+<div class="quiz-container">
+    <h1>Membership Quiz</h1>
+    <p>Answer a few questions to determine your ideal membership tier.</p>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label for="organization">What type of organization are you?</label>
+            <select id="organization" name="organization" required>
+                <option value="">-- Select --</option>
+                <option value="Business">Business</option>
+                <option value="Non-Profit">Non-Profit</option>
+                <option value="Academic">Academic</option>
+                <option value="Government">Government</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="involvement">Your level of involvement?</label>
+            <select id="involvement" name="involvement" required>
+                <option value="">-- Select --</option>
+                <option value="Observer">Observer</option>
+                <option value="Participate">Participate</option>
+                <option value="Lead discussions">Lead discussions</option>
+                <option value="Decision maker">Decision maker</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="goal">Your primary goal?</label>
+            <select id="goal" name="goal" required>
+                <option value="">-- Select --</option>
+                <option value="Learn">Learn about circular economy</option>
+                <option value="Network">Network with peers</option>
+                <option value="Collaborate">Collaborate on projects</option>
+                <option value="Influence circular economy policy">Influence circular economy policy</option>
+            </select>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Services - GrowthTree{% endblock %}
+
+{% block content %}
+<div class="services-container">
+    <h1>Our Services</h1>
+    
+    {% for service in services %}
+    <div class="service-card">
+        <h3>{{ service.title }}</h3>
+        <p>{{ service.description }}</p>
+        <p class="price">${{ service.price }}</p>
+        <a href="{{ url_for(''buy'', service_name=service.title) }}" class="btn btn-primary">Purchase</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
