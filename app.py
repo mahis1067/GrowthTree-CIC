@@ -24,20 +24,12 @@ def default_tree():
     return {"year1": [], "year2": [], "year3": []}
 
 
-def add_service_to_tree(tree, service_name):
-    all_services = set(tree["year1"] + tree["year2"] + tree["year3"])
-    if service_name in all_services:
-        return tree
-
-    year_targets = ["year1", "year2", "year3"]
-    target_year = min(year_targets, key=lambda y: len(tree[y]))
-    tree[target_year].append(service_name)
-    return tree
-
-
 def merge_purchased_into_tree(tree, purchased):
+    all_services = set(tree["year1"] + tree["year2"] + tree["year3"])
     for service_name in purchased:
-        tree = add_service_to_tree(tree, service_name)
+        if service_name not in all_services:
+            tree["year1"].append(service_name)
+            all_services.add(service_name)
     return tree
 
 
@@ -157,8 +149,6 @@ def buy(service_name):
     session["purchased"] = purchased
 
     tree_data = session.get("growth_tree", default_tree())
-    if service_name not in tree_data["year1"] + tree_data["year2"] + tree_data["year3"]:
-        tree_data = add_service_to_tree(tree_data, service_name)
     session["growth_tree"] = merge_purchased_into_tree(tree_data, purchased)
 
     old_tier = session.get("tier")
