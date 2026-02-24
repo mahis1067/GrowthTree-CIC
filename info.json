@@ -1,22 +1,37 @@
 [
   {
-    "title": "Research Access",
-    "price": 500,
-    "description": "Access to exclusive circular economy research."
-  },
-  {
     "title": "Networking Forum",
     "price": 750,
-    "description": "Access to cross-sector collaboration events."
+    "description": "Access to a cross-sector network for collaboration, shared insights, and policy engagement."
   },
   {
-    "title": "Advisory Committee",
+    "title": "Multi-Sectoral Perspectives",
+    "price": 1000,
+    "description": "Uniting governments, industry, SMEs, individuals, and non-profits in open, neutral discussions on issues that impact everyone."
+  },
+  {
+    "title": "Reduced Rates",
     "price": 1200,
-    "description": "Participate in governance advisory committees."
+    "description": "Discounted access to CIC events, workshops, and resources for members."
   },
   {
-    "title": "Governance Voting Rights",
+    "title": "Access Information",
+    "price": 1500,
+    "description": "Access to curated insights on circular economy, waste reduction, and resource recovery, with member-exclusive research and publications at free or reduced cost."
+  },
+  {
+    "title": "Stay Informed",
+    "price": 1500,
+    "description": "Access to exclusive daily highlights covering global circular news, policy updates, partner events, and council announcements."
+  },
+  {
+    "title": "Voting Privileges",
     "price": 2000,
     "description": "Voting privileges within CIC governance."
+  },
+  {
+    "title": "Influence",
+    "price": 2500,
+    "description": "Influence the direction of CIC initiatives and priorities through active participation in working groups and committees."
   }
 ]
