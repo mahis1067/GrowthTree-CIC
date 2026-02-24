@@ -1,0 +1,22 @@
+[
+  {
+    "title": "Research Access",
+    "price": 500,
+    "description": "Access to exclusive circular economy research."
+  },
+  {
+    "title": "Networking Forum",
+    "price": 750,
+    "description": "Access to cross-sector collaboration events."
+  },
+  {
+    "title": "Advisory Committee",
+    "price": 1200,
+    "description": "Participate in governance advisory committees."
+  },
+  {
+    "title": "Governance Voting Rights",
+    "price": 2000,
+    "description": "Voting privileges within CIC governance."
+  }
+]
