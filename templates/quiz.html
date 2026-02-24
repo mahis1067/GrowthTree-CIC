@@ -1,47 +1,43 @@
 {% extends "base.html" %}
-
-{% block title %}Quiz - GrowthTree{% endblock %}
-
+{% block title %}Quiz - CIC Growth Tree{% endblock %}
 {% block content %}
-<div class="quiz-container">
-    <h1>Membership Quiz</h1>
-    <p>Answer a few questions to determine your ideal membership tier.</p>
-    
-    <form method="POST">
-        <div class="form-group">
-            <label for="organization">What type of organization are you?</label>
-            <select id="organization" name="organization" required>
-                <option value="">-- Select --</option>
-                <option value="Business">Business</option>
-                <option value="Non-Profit">Non-Profit</option>
-                <option value="Academic">Academic</option>
-                <option value="Government">Government</option>
+<section class="card quiz-card">
+    <h1>Personalization Quiz</h1>
+    <p>Retake this quiz any time. Previously purchased services remain in your roadmap.</p>
+    <form method="post" class="grid-form">
+        <label>Organization type
+            <select name="organization" required>
+                <option value="">Select one</option>
+                {% for option in ["Public Institution", "Business", "Municipality/Government", "Association/Non-Profit", "Individual"] %}
+                <option value="{{ option }}" {% if answers.organization == option %}selected{% endif %}>{{ option }}</option>
+                {% endfor %}
             </select>
-        </div>
-        
-        <div class="form-group">
-            <label for="involvement">Your level of involvement?</label>
-            <select id="involvement" name="involvement" required>
-                <option value="">-- Select --</option>
-                <option value="Observer">Observer</option>
-                <option value="Participate">Participate</option>
-                <option value="Lead discussions">Lead discussions</option>
-                <option value="Decision maker">Decision maker</option>
+        </label>
+        <label>Primary goal
+            <select name="goal" required>
+                <option value="">Select one</option>
+                {% for option in ["Learn and research", "Build network", "Influence policy"] %}
+                <option value="{{ option }}" {% if answers.goal == option %}selected{% endif %}>{{ option }}</option>
+                {% endfor %}
             </select>
-        </div>
-        
-        <div class="form-group">
-            <label for="goal">Your primary goal?</label>
-            <select id="goal" name="goal" required>
-                <option value="">-- Select --</option>
-                <option value="Learn">Learn about circular economy</option>
-                <option value="Network">Network with peers</option>
-                <option value="Collaborate">Collaborate on projects</option>
-                <option value="Influence circular economy policy">Influence circular economy policy</option>
+        </label>
+        <label>Annual revenue
+            <select name="revenue" required>
+                <option value="">Select one</option>
+                {% for option in ["<$100k", "$100k-$500k", "$500k-$2M", "$2M+"] %}
+                <option value="{{ option }}" {% if answers.revenue == option %}selected{% endif %}>{{ option }}</option>
+                {% endfor %}
             </select>
-        </div>
-        
-        <button type="submit" class="btn btn-primary">Submit</button>
+        </label>
+        <label>Years with CIC
+            <select name="years_with_cic" required>
+                <option value="0" {% if answers.years_with_cic == '0' %}selected{% endif %}>New member</option>
+                <option value="1" {% if answers.years_with_cic == '1' %}selected{% endif %}>1 year</option>
+                <option value="2" {% if answers.years_with_cic == '2' %}selected{% endif %}>2 years</option>
+                <option value="3" {% if answers.years_with_cic == '3' %}selected{% endif %}>3+ years</option>
+            </select>
+        </label>
+        <button class="btn" type="submit">Generate Growth Tree</button>
     </form>
-</div>
+</section>
 {% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Growth Tree - CIC{% endblock %}
+{% block content %}
+<section class="card">
+    <div class="row-between">
+        <h1>Your Growth Tree</h1>
+        <div class="tier-pill">Tier: {{ tier }}</div>
+    </div>
+    <div class="meter-wrap">
+        <div class="meter" style="--progress: {{ progress }}%;">
+            <span>{{ progress }}%</span>
+        </div>
+        <p>Tier Meter Progress</p>
+    </div>
+
+    {% if celebration %}
+    <div class="celebration">🎉 {{ celebration }}</div>
+    {% endif %}
+
+    <div class="tree-grid">
+        {% for year, items in [("Year 1", tree.year1), ("Year 2", tree.year2), ("Year 3", tree.year3)] %}
+        <article>
+            <h3>{{ year }}</h3>
+            {% if items %}
+                {% for service_name in items %}
+                {% set detail = services_map.get(service_name, {}) %}
+                <details class="service-node">
+                    <summary>{{ service_name }}</summary>
+                    <p>{{ detail.description or 'Recommended service for your roadmap.' }}</p>
+                    {% if detail.price %}<p><strong>${{ detail.price }}</strong></p>{% endif %}
+                    <a class="btn" href="{{ url_for('buy', service_name=service_name) }}">Buy service</a>
+                </details>
+                {% endfor %}
+            {% else %}
+                <p class="muted">No recommendations yet.</p>
+            {% endif %}
+        </article>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
