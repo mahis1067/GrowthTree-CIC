@@ -2,16 +2,21 @@
 {% block title %}Services - CIC{% endblock %}
 {% block content %}
 <section class="card">
-    <h1>Additional Services</h1>
+    <h1>Additional Services</h1> <!-- Page heading -->
     <div class="service-list">
-        {% for service in services %}
+        {% for service in services %} <!-- Loop through all available services -->
         <article class="service-card">
+            <!-- Display service title -->
             <h3>{{ service.title }}</h3>
+            <!-- Display service description -->
             <p>{{ service.description }}</p>
+            <!-- Display service price -->
             <p><strong>${{ service.price }}</strong></p>
             {% if service.title in purchased %}
+                <!-- If user already purchased this service -->
                 <span class="owned">Purchased</span>
             {% else %}
+                <!-- Button to add service to growth tree and mark as purchased -->
                 <a class="btn" href="{{ url_for('buy', service_name=service.title, next=url_for('services')) }}">Add to Tree</a>
             {% endif %}
         </article>
