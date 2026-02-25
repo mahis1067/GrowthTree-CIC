@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Growth Tree - CIC{% endblock %}
+{% block content %}
+<section class="card">
+    <div class="row-between">
+        <h1>Your Growth Tree</h1>
+        <div class="tier-pill">Tier: {{ tier }}</div>
+    </div>
+    <div class="meter-wrap">
+        <div class="meter" style="--progress: {{ progress }}%;">
+            <span>{{ progress }}%</span>
+        </div>
+        <p>Tier Meter Progress</p>
+    </div>
+
+    {% if celebration %}
+    <div class="celebration">🎉 {{ celebration }}</div>
+    {% endif %}
+
+    <div class="growth-tree-diagram year-tree">
+        <div class="tree-trunk" aria-hidden="true"></div>
+        <ol class="year-tree-list">
+            {% for year, key, items in [("Year 1", "year1", tree.year1), ("Year 2", "year2", tree.year2), ("Year 3", "year3", tree.year3)] %}
+            <li class="year-node branch-{{ key }}">
+                <div class="year-node-title">{{ year }}</div>
+                <ul class="service-leaves">
+                    {% if items %}
+                        {% for service_name in items %}
+                        {% set detail = services_map.get(service_name, {}) %}
+                        <li class="service-leaf">
+                            <details class="service-node">
+                                <summary>
+                                    {{ service_name }}
+                                    {% if service_name in purchased %}
+                                    <span class="owned">Purchased</span>
+                                    {% endif %}
+                                </summary>
+                                <p>{{ detail.description or 'Recommended service for your roadmap.' }}</p>
+                                {% if detail.price %}<p><strong>${{ detail.price }}</strong></p>{% endif %}
+                                {% if service_name in purchased %}
+                                    <span class="owned">Already in your roadmap</span>
+                                {% else %}
+                                    <a class="btn" href="{{ url_for('buy', service_name=service_name) }}">Buy service</a>
+                                {% endif %}
+                            </details>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="service-leaf"><p class="muted">No recommendations yet.</p></li>
+                    {% endif %}
+                </ul>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+</section>
+{% endblock %}
