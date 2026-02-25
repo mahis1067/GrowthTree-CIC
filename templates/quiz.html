@@ -44,7 +44,7 @@
         <label>5. Are you interested in influence/governance opportunities?
             <select name="governance_interest" required>
                 <option value="">Select one</option>
-                {% for option in ["Yes: policy input/strategy", "Yes: committee work", "Maybe later", "Not right now"] %}
+                {% for option in ["Yes : policy input/strategy", "Yes: committee work", "Maybe later", "Not right now"] %}
                 <option value="{{ option }}" {% if answers.governance_interest == option %}selected{% endif %}>{{ option }}</option>
                 {% endfor %}
             </select>
