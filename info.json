@@ -1,37 +1,139 @@
 [
   {
-    "title": "Networking Forum",
-    "price": 750,
-    "description": "Access to a cross-sector network for collaboration, shared insights, and policy engagement."
+    "title": "University of Toronto Club Events",
+    "price": 650,
+    "description": "Discounted access to UofT-led circular economy student club events, panel sessions, and campus networking opportunities.",
+    "year": "year1",
+    "tags": {
+      "organization_type": ["Public institution (school, hospital)", "Individual / consultant"],
+      "primary_reason": ["Attend events/workshops at reduced cost", "Connect with policymakers and peers"],
+      "event_type": ["Local community circular economy activities", "Practical training or workshops"],
+      "communication_style": ["Monthly updates", "Only key event notifications"]
+    }
   },
   {
-    "title": "Multi-Sectoral Perspectives",
-    "price": 1000,
-    "description": "Uniting governments, industry, SMEs, individuals, and non-profits in open, neutral discussions on issues that impact everyone."
+    "title": "Google Industry Data Base Access",
+    "price": 2200,
+    "description": "Premium access to curated industry benchmarks and sustainability datasets for strategy and executive planning.",
+    "year": "year3",
+    "tags": {
+      "organization_type": ["Business (small / medium / large)", "Municipality"],
+      "primary_reason": ["Access trusted information & research", "Influence policy and strategy"],
+      "journey_stage": ["Leading initiatives", "Want to shape sector strategy"],
+      "year2_goal": ["Drive measurable projects in your organization", "Influence circular economy policy"]
+    }
   },
   {
-    "title": "Reduced Rates",
+    "title": "Municipal Policy Accelerator Forum",
+    "price": 1800,
+    "description": "Policy-focused workshops for municipalities and public leaders working on circular procurement and regulations.",
+    "year": "year2",
+    "tags": {
+      "organization_type": ["Municipality", "Public institution (school, hospital)"],
+      "primary_reason": ["Influence policy and strategy", "Participate in committees or governance"],
+      "governance_interest": ["Yes : policy input/strategy", "Yes: committee work"],
+      "event_type": ["High-level policy & advocacy discussions"]
+    }
+  },
+  {
+    "title": "SME Packaging Innovation Lab",
+    "price": 1400,
+    "description": "Hands-on technical lab for SMEs improving circular packaging, reverse logistics, and product redesign.",
+    "year": "year1",
+    "tags": {
+      "organization_type": ["Business (small / medium / large)", "Nonprofit or association"],
+      "journey_stage": ["Just getting started", "Implementing projects"],
+      "event_type": ["Practical training or workshops"],
+      "involvement_level": ["Actively collaborate on projects", "Participate in a few events"]
+    }
+  },
+  {
+    "title": "Cross-Sector Climate Partnership Network",
     "price": 1200,
-    "description": "Discounted access to CIC events, workshops, and resources for members."
+    "description": "Matchmaking network connecting businesses, municipalities, and nonprofits for collaboration opportunities.",
+    "year": "year2",
+    "tags": {
+      "primary_reason": ["Connect with policymakers and peers"],
+      "year2_goal": ["Build cross-sector partnerships", "Raise your profile in the sector"],
+      "event_type": ["Multi-sector collaboration events"],
+      "involvement_level": ["Actively collaborate on projects", "Lead discussions or workstreams"]
+    }
   },
   {
-    "title": "Access Information",
-    "price": 1500,
-    "description": "Access to curated insights on circular economy, waste reduction, and resource recovery, with member-exclusive research and publications at free or reduced cost."
+    "title": "CIC Daily Policy Intelligence Feed",
+    "price": 900,
+    "description": "Real-time and daily policy alerts with curated analysis across Canadian and global circular economy updates.",
+    "year": "year1",
+    "tags": {
+      "year1_benefit": ["Weekly/daily news and policy updates"],
+      "communication_style": ["Real-time alerts", "Bi-weekly topic digests"],
+      "primary_reason": ["Access trusted information & research"]
+    }
   },
   {
-    "title": "Stay Informed",
-    "price": 1500,
-    "description": "Access to exclusive daily highlights covering global circular news, policy updates, partner events, and council announcements."
+    "title": "Committee Leadership Track",
+    "price": 1600,
+    "description": "Structured pathway to join and lead CIC committees, advisory groups, and strategic workstreams.",
+    "year": "year2",
+    "tags": {
+      "governance_interest": ["Yes: committee work", "Yes : policy input/strategy"],
+      "year1_benefit": ["Serving on committees or advisory groups"],
+      "involvement_level": ["Lead discussions or workstreams"]
+    }
   },
   {
-    "title": "Voting Privileges",
-    "price": 2000,
-    "description": "Voting privileges within CIC governance."
-  },
-  {
-    "title": "Influence",
+    "title": "CIC Governance Voting Privileges",
     "price": 2500,
-    "description": "Influence the direction of CIC initiatives and priorities through active participation in working groups and committees."
+    "description": "Voting rights package with governance orientation, policy briefings, and annual strategy sessions.",
+    "year": "year3",
+    "tags": {
+      "governance_interest": ["Yes : policy input/strategy"],
+      "year2_goal": ["Influence circular economy policy"],
+      "journey_stage": ["Leading initiatives", "Want to shape sector strategy"]
+    }
+  },
+  {
+    "title": "Local Community Circular Action Grants",
+    "price": 1100,
+    "description": "Program support for local circular economy pilots, outreach campaigns, and measurable community outcomes.",
+    "year": "year1",
+    "tags": {
+      "event_type": ["Local community circular economy activities"],
+      "year2_goal": ["Drive measurable projects in your organization"],
+      "organization_type": ["Nonprofit or association", "Individual / consultant", "Municipality"]
+    }
+  },
+  {
+    "title": "Executive Circular Strategy Advisory",
+    "price": 2800,
+    "description": "Executive advisory sessions for organizations leading major circular strategy and policy transformation.",
+    "year": "year3",
+    "tags": {
+      "journey_stage": ["Leading initiatives", "Want to shape sector strategy"],
+      "primary_reason": ["Influence policy and strategy"],
+      "year2_goal": ["Influence circular economy policy", "Drive measurable projects in your organization"]
+    }
+  },
+  {
+    "title": "Academic Research Exchange Hub",
+    "price": 1300,
+    "description": "Research collaboration hub for universities, hospitals, and analysts sharing methods, findings, and datasets.",
+    "year": "year2",
+    "tags": {
+      "organization_type": ["Public institution (school, hospital)", "Individual / consultant"],
+      "primary_reason": ["Access trusted information & research", "Connect with policymakers and peers"],
+      "year2_goal": ["Raise your profile in the sector", "Build cross-sector partnerships"]
+    }
+  },
+  {
+    "title": "CIC Workshop Reduced-Rate Pass",
+    "price": 750,
+    "description": "Reduced-rate annual pass for CIC training workshops, forums, and practical implementation sessions.",
+    "year": "year1",
+    "tags": {
+      "primary_reason": ["Attend events/workshops at reduced cost"],
+      "year1_benefit": ["Attending forums and workshops"],
+      "involvement_level": ["Participate in a few events", "Observe & consume resources/events"]
+    }
   }
 ]
