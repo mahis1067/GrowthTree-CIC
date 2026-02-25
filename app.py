@@ -24,148 +24,41 @@ def default_tree():
     return {"year1": [], "year2": [], "year3": []}
 
 
-def add_service_to_tree(tree, service_name):
-    all_services = set(tree["year1"] + tree["year2"] + tree["year3"])
-    if service_name in all_services:
-        return tree
-
-    year_targets = ["year1", "year2", "year3"]
-    target_year = min(year_targets, key=lambda y: len(tree[y]))
-    tree[target_year].append(service_name)
-    return tree
-
-
 def merge_purchased_into_tree(tree, purchased):
+    all_services = set(tree["year1"] + tree["year2"] + tree["year3"])
     for service_name in purchased:
-        tree = add_service_to_tree(tree, service_name)
+        if service_name not in all_services:
+            tree["year1"].append(service_name)
+            all_services.add(service_name)
     return tree
-
-
-def classify_bundle(org_type, journey_stage):
-    if org_type == "Public institution (school, hospital)":
-        return "public"
-    if org_type == "Municipality":
-        return "municipality"
-    if org_type in {"Business (small / medium / large)", "Nonprofit or association"}:
-        if journey_stage in {"Leading initiatives", "Want to shape sector strategy"}:
-            return "large_org"
-        return "small_org"
-    return "individual"
 
 
 def generate_growth_tree(answers):
     tree = default_tree()
-    org_type = answers.get("organization_type")
-    primary_reason = answers.get("primary_reason")
-    journey_stage = answers.get("journey_stage")
-    year1_benefit = answers.get("year1_benefit")
-    governance_interest = answers.get("governance_interest")
-    event_type = answers.get("event_type")
-    involvement_level = answers.get("involvement_level")
-    year2_goal = answers.get("year2_goal")
-    communication_style = answers.get("communication_style")
+    org = answers.get("organization")
+    goal = answers.get("goal")
+    scale = answers.get("revenue")
 
-    bundle = classify_bundle(org_type, journey_stage)
-    bundle_map = {
-        "public": {
-            "year1": ["Access Information", "Stay Informed"],
-            "year2": ["Reduced Rates", "Networking Forum"],
-            "year3": ["Voting Privileges", "Influence", "Multi-Sectoral Perspectives"],
-        },
-        "small_org": {
-            "year1": ["Networking Forum", "Stay Informed"],
-            "year2": ["Multi-Sectoral Perspectives", "Reduced Rates"],
-            "year3": ["Voting Privileges", "Influence", "Access Information"],
-        },
-        "municipality": {
-            "year1": ["Access Information", "Networking Forum"],
-            "year2": ["Multi-Sectoral Perspectives", "Stay Informed"],
-            "year3": ["Voting Privileges", "Influence", "Reduced Rates"],
-        },
-        "large_org": {
-            "year1": ["Networking Forum", "Access Information"],
-            "year2": ["Reduced Rates", "Multi-Sectoral Perspectives"],
-            "year3": ["Voting Privileges", "Influence", "Reduced Rates"],
-        },
-        "individual": {
-            "year1": ["Reduced Rates", "Stay Informed"],
-            "year2": ["Networking Forum", "Multi-Sectoral Perspectives"],
-            "year3": ["Voting Privileges", "Influence", "Access Information"],
-        },
-    }
+    if org in {"Business", "Municipality/Government"}:
+        tree["year1"].extend(["Access Information", "Stay Informed"])
+    elif org == "Public Institution":
+        tree["year1"].extend(["Access Information", "Multi-Sectoral Perspectives"])
+    elif org == "Association/Non-Profit":
+        tree["year1"].extend(["Networking Forum", "Multi-Sectoral Perspectives"])
+    else:
+        tree["year1"].extend(["Reduced Rates", "Stay Informed"])
 
-    selected = bundle_map[bundle]
-    tree["year1"].extend(selected["year1"])
-    tree["year2"].extend(selected["year2"])
-    tree["year3"].extend(selected["year3"])
-
-    # Quiz-driven tuning so recommendations reflect all questions.
-    if primary_reason in {"Access trusted information & research", "Other"}:
-        tree["year1"].append("Access Information")
-    if primary_reason == "Connect with policymakers and peers":
-        tree["year1"].append("Networking Forum")
-        tree["year2"].append("Multi-Sectoral Perspectives")
-    if primary_reason == "Attend events/workshops at reduced cost":
-        tree["year1"].append("Reduced Rates")
-    if primary_reason in {"Influence policy and strategy", "Participate in committees or governance"}:
+    if goal == "Influence policy":
         tree["year2"].append("Influence")
-
-    if year1_benefit == "Weekly/daily news and policy updates":
-        tree["year1"].append("Stay Informed")
-    elif year1_benefit == "Networking with government & businesses":
-        tree["year1"].append("Networking Forum")
-    elif year1_benefit == "Attending forums and workshops":
-        tree["year2"].append("Reduced Rates")
-    elif year1_benefit == "Serving on committees or advisory groups":
-        tree["year2"].append("Influence")
-
-    if governance_interest in {"Yes : policy input/strategy", "Yes: policy input/strategy"}:
-        tree["year3"].extend(["Influence", "Voting Privileges"])
-    elif governance_interest == "Yes: committee work":
-        tree["year2"].append("Multi-Sectoral Perspectives")
-    elif governance_interest == "Maybe later":
+    elif goal == "Build network":
         tree["year2"].append("Networking Forum")
+    else:
+        tree["year2"].append("Access Information")
 
-    if event_type == "High-level policy & advocacy discussions":
-        tree["year3"].append("Influence")
-    elif event_type == "Practical training or workshops":
-        tree["year2"].append("Reduced Rates")
-    elif event_type == "Multi-sector collaboration events":
-        tree["year2"].append("Multi-Sectoral Perspectives")
-    elif event_type == "Local community circular economy activities":
-        tree["year1"].append("Networking Forum")
-
-    if involvement_level == "Observe & consume resources/events":
-        tree["year1"].append("Stay Informed")
-    elif involvement_level == "Participate in a few events":
-        tree["year2"].append("Reduced Rates")
-    elif involvement_level == "Actively collaborate on projects":
-        tree["year2"].append("Multi-Sectoral Perspectives")
-    elif involvement_level == "Lead discussions or workstreams":
-        tree["year3"].append("Influence")
-
-    if year2_goal == "Raise your profile in the sector":
-        tree["year2"].append("Networking Forum")
-    elif year2_goal == "Influence circular economy policy":
-        tree["year3"].extend(["Influence", "Voting Privileges"])
-    elif year2_goal == "Build cross-sector partnerships":
-        tree["year2"].append("Multi-Sectoral Perspectives")
-    elif year2_goal == "Drive measurable projects in your organization":
-        tree["year3"].append("Access Information")
-
-    if communication_style == "Real-time alerts":
-        tree["year1"].append("Stay Informed")
-    elif communication_style == "Bi-weekly topic digests":
-        tree["year1"].append("Access Information")
-    elif communication_style == "Only key event notifications":
-        tree["year2"].append("Reduced Rates")
-
-    # Make the middle tier more attractive by ensuring at least two tangible services.
-    preferred_silver = ["Reduced Rates", "Networking Forum", "Multi-Sectoral Perspectives", "Stay Informed"]
-    for service_name in preferred_silver:
-        if len(tree["year2"]) >= 2:
-            break
-        tree["year2"].append(service_name)
+    if scale in {"$500k-$2M", "$2M+"}:
+        tree["year3"].append("Voting Privileges")
+    else:
+        tree["year3"].append("Reduced Rates")
 
     for year in tree:
         tree[year] = list(dict.fromkeys(tree[year]))
@@ -208,14 +101,7 @@ def quiz():
     if request.method == "POST":
         answers = request.form.to_dict()
         session["quiz_answers"] = answers
-        stage_to_years = {
-            "Just getting started": "0",
-            "Implementing projects": "1",
-            "Leading initiatives": "2",
-            "Want to shape sector strategy": "3",
-            "Other": "0",
-        }
-        session["membership_years"] = stage_to_years.get(answers.get("journey_stage"), "0")
+        session["membership_years"] = answers.get("years_with_cic", "0")
         session["growth_tree"] = generate_growth_tree(answers)
 
         new_tier = calculate_tier()
@@ -263,8 +149,6 @@ def buy(service_name):
     session["purchased"] = purchased
 
     tree_data = session.get("growth_tree", default_tree())
-    if service_name not in tree_data["year1"] + tree_data["year2"] + tree_data["year3"]:
-        tree_data = add_service_to_tree(tree_data, service_name)
     session["growth_tree"] = merge_purchased_into_tree(tree_data, purchased)
 
     old_tier = session.get("tier")
