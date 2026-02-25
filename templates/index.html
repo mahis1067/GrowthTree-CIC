@@ -2,12 +2,17 @@
 
 {% block content %}
 <section class="card">
+    <!-- Main heading for the homepage -->
     <h1>Circular Innovation Council Growth Tree</h1>
+    <!-- Short description explaining the purpose of the app -->
     <p>
         Build a personalized multi-year roadmap for your organization, purchase services, and track your recognition tier as you grow in the circular economy ecosystem.
     </p>
+    <!-- Action buttons for user navigation -->
     <div class="actions">
+        <!-- Button to start the quiz -->
         <a class="btn" href="{{ url_for('quiz') }}">Start Quiz</a>
+        <!-- Button to go directly to services page -->
         <a class="btn btn-secondary" href="{{ url_for('services') }}">Browse Services</a>
     </div>
 </section>
