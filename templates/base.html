@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Page title block -->
     <title>{% block title %}CIC Growth Tree{% endblock %}</title>
+    <!-- Link to external CSS file stored in the static folder -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
+    <!-- Sidebar navigation menu -->
     <aside class="sidebar">
-        <h2>CIC Growth Tree</h2>
+        <h2>CIC Growth Tree</h2> <!-- Sidebar title -->
+        <!-- Navigation links to different routes in app.py -->
         <a href="{{ url_for('index') }}">Home</a>
         <a href="{{ url_for('quiz') }}">Personalization Quiz</a>
         <a href="{{ url_for('tree') }}">Growth Tree</a>
@@ -16,6 +20,7 @@
         <a href="{{ url_for('tier') }}">Tier Meter</a>
         <a href="{{ url_for('invoice') }}">Invoice</a>
     </aside>
+    <!-- Main content area where pages inject their specifc content -->
     <main class="main-content">
         {% block content %}{% endblock %}
     </main>
