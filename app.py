@@ -24,41 +24,65 @@ def default_tree():
     return {"year1": [], "year2": [], "year3": []}
 
 
-def merge_purchased_into_tree(tree, purchased):
+def add_service_to_tree(tree, service_name):
     all_services = set(tree["year1"] + tree["year2"] + tree["year3"])
-    for service_name in purchased:
-        if service_name not in all_services:
-            tree["year1"].append(service_name)
-            all_services.add(service_name)
+    if service_name in all_services:
+        return tree
+
+    year_targets = ["year1", "year2", "year3"]
+    target_year = min(year_targets, key=lambda y: len(tree[y]))
+    tree[target_year].append(service_name)
     return tree
+
+
+def merge_purchased_into_tree(tree, purchased):
+    for service_name in purchased:
+        tree = add_service_to_tree(tree, service_name)
+    return tree
+
+
+
+def service_match_score(service, answers):
+    tags = service.get("tags", {}) or {}
+    if not tags:
+        return 1
+
+    score = 0
+    for field, expected_values in tags.items():
+        answer = answers.get(field)
+        if not answer:
+            continue
+
+        normalized_expected = [str(value).strip().lower() for value in expected_values]
+        if str(answer).strip().lower() in normalized_expected:
+            score += 3
+        else:
+            score -= 1
+    return score
 
 
 def generate_growth_tree(answers):
     tree = default_tree()
-    org = answers.get("organization")
-    goal = answers.get("goal")
-    scale = answers.get("revenue")
+    year_keys = ["year1", "year2", "year3"]
 
-    if org in {"Business", "Municipality/Government"}:
-        tree["year1"].extend(["Access Information", "Stay Informed"])
-    elif org == "Public Institution":
-        tree["year1"].extend(["Access Information", "Multi-Sectoral Perspectives"])
-    elif org == "Association/Non-Profit":
-        tree["year1"].extend(["Networking Forum", "Multi-Sectoral Perspectives"])
-    else:
-        tree["year1"].extend(["Reduced Rates", "Stay Informed"])
+    scored_services = []
+    for service in SERVICES:
+        target_year = service.get("year", "year2")
+        if target_year not in year_keys:
+            target_year = "year2"
+        score = service_match_score(service, answers)
+        scored_services.append((target_year, score, service))
 
-    if goal == "Influence policy":
-        tree["year2"].append("Influence")
-    elif goal == "Build network":
-        tree["year2"].append("Networking Forum")
-    else:
-        tree["year2"].append("Access Information")
+    for year in year_keys:
+        yearly = [item for item in scored_services if item[0] == year]
+        yearly.sort(key=lambda item: (item[1], -item[2].get("price", 0)), reverse=True)
 
-    if scale in {"$500k-$2M", "$2M+"}:
-        tree["year3"].append("Voting Privileges")
-    else:
-        tree["year3"].append("Reduced Rates")
+        chosen = [service["title"] for _, score, service in yearly if score > 0][:3]
+        if len(chosen) < 2:
+            fallback = [service["title"] for _, _, service in yearly if service["title"] not in chosen]
+            chosen.extend(fallback[: 2 - len(chosen)])
+
+        tree[year].extend(chosen)
 
     for year in tree:
         tree[year] = list(dict.fromkeys(tree[year]))
@@ -101,7 +125,14 @@ def quiz():
     if request.method == "POST":
         answers = request.form.to_dict()
         session["quiz_answers"] = answers
-        session["membership_years"] = answers.get("years_with_cic", "0")
+        stage_to_years = {
+            "Just getting started": "0",
+            "Implementing projects": "1",
+            "Leading initiatives": "2",
+            "Want to shape sector strategy": "3",
+            "Other": "0",
+        }
+        session["membership_years"] = stage_to_years.get(answers.get("journey_stage"), "0")
         session["growth_tree"] = generate_growth_tree(answers)
 
         new_tier = calculate_tier()
@@ -122,12 +153,19 @@ def tree():
     session["growth_tree"] = tree_data
 
     celebration = session.pop("celebration", None)
+    purchased_names = session.get("purchased", [])
+    purchased_items = [SERVICES_BY_TITLE[name] for name in purchased_names if name in SERVICES_BY_TITLE]
+    total_spent = sum(item["price"] for item in purchased_items)
+
     return render_template(
         "tree.html",
         tree=tree_data,
         tier=calculate_tier(),
         progress=tier_progress_percent(),
         services_map=SERVICES_BY_TITLE,
+        purchased=set(purchased_names),
+        purchased_count=len(purchased_names),
+        total_spent=total_spent,
         celebration=celebration,
     )
 
@@ -149,6 +187,8 @@ def buy(service_name):
     session["purchased"] = purchased
 
     tree_data = session.get("growth_tree", default_tree())
+    if service_name not in tree_data["year1"] + tree_data["year2"] + tree_data["year3"]:
+        tree_data = add_service_to_tree(tree_data, service_name)
     session["growth_tree"] = merge_purchased_into_tree(tree_data, purchased)
 
     old_tier = session.get("tier")
