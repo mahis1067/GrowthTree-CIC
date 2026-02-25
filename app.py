@@ -41,7 +41,6 @@ def merge_purchased_into_tree(tree, purchased):
     return tree
 
 
-<<<<<<< HEAD
 def classify_bundle(org_type, journey_stage):
     if org_type == "Public institution (school, hospital)":
         return "public"
@@ -52,31 +51,10 @@ def classify_bundle(org_type, journey_stage):
             return "large_org"
         return "small_org"
     return "individual"
-=======
-
-def service_match_score(service, answers):
-    tags = service.get("tags", {}) or {}
-    if not tags:
-        return 1
-
-    score = 0
-    for field, expected_values in tags.items():
-        answer = answers.get(field)
-        if not answer:
-            continue
-
-        normalized_expected = [str(value).strip().lower() for value in expected_values]
-        if str(answer).strip().lower() in normalized_expected:
-            score += 3
-        else:
-            score -= 1
-    return score
->>>>>>> origin/codex/create-cic-growth-tree-membership-model-r9pgf9
 
 
 def generate_growth_tree(answers):
     tree = default_tree()
-<<<<<<< HEAD
     org_type = answers.get("organization_type")
     primary_reason = answers.get("primary_reason")
     journey_stage = answers.get("journey_stage")
@@ -188,28 +166,6 @@ def generate_growth_tree(answers):
         if len(tree["year2"]) >= 2:
             break
         tree["year2"].append(service_name)
-=======
-    year_keys = ["year1", "year2", "year3"]
-
-    scored_services = []
-    for service in SERVICES:
-        target_year = service.get("year", "year2")
-        if target_year not in year_keys:
-            target_year = "year2"
-        score = service_match_score(service, answers)
-        scored_services.append((target_year, score, service))
-
-    for year in year_keys:
-        yearly = [item for item in scored_services if item[0] == year]
-        yearly.sort(key=lambda item: (item[1], -item[2].get("price", 0)), reverse=True)
-
-        chosen = [service["title"] for _, score, service in yearly if score > 0][:3]
-        if len(chosen) < 2:
-            fallback = [service["title"] for _, _, service in yearly if service["title"] not in chosen]
-            chosen.extend(fallback[: 2 - len(chosen)])
-
-        tree[year].extend(chosen)
->>>>>>> origin/codex/create-cic-growth-tree-membership-model-r9pgf9
 
     for year in tree:
         tree[year] = list(dict.fromkeys(tree[year]))
