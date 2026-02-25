@@ -5,38 +5,87 @@
     <h1>Personalization Quiz</h1>
     <p>Retake this quiz any time. Previously purchased services remain in your roadmap.</p>
     <form method="post" class="grid-form">
-        <label>Organization type
-            <select name="organization" required>
+        <label>1. Which best describes your organization?
+            <select name="organization_type" required>
                 <option value="">Select one</option>
-                {% for option in ["Public Institution", "Business", "Municipality/Government", "Association/Non-Profit", "Individual"] %}
-                <option value="{{ option }}" {% if answers.organization == option %}selected{% endif %}>{{ option }}</option>
+                {% for option in ["Municipality", "Business (small / medium / large)", "Public institution (school, hospital)", "Nonprofit or association", "Individual / consultant", "Other"] %}
+                <option value="{{ option }}" {% if answers.organization_type == option %}selected{% endif %}>{{ option }}</option>
                 {% endfor %}
             </select>
         </label>
-        <label>Primary goal
-            <select name="goal" required>
+
+        <label>2. What’s your primary reason for joining CIC?
+            <select name="primary_reason" required>
                 <option value="">Select one</option>
-                {% for option in ["Learn and research", "Build network", "Influence policy"] %}
-                <option value="{{ option }}" {% if answers.goal == option %}selected{% endif %}>{{ option }}</option>
+                {% for option in ["Access trusted information & research", "Connect with policymakers and peers", "Attend events/workshops at reduced cost", "Influence policy and strategy", "Participate in committees or governance", "Other"] %}
+                <option value="{{ option }}" {% if answers.primary_reason == option %}selected{% endif %}>{{ option }}</option>
                 {% endfor %}
             </select>
         </label>
-        <label>Annual revenue
-            <select name="revenue" required>
+
+        <label>3. Where are you on your circular economy journey?
+            <select name="journey_stage" required>
                 <option value="">Select one</option>
-                {% for option in ["<$100k", "$100k-$500k", "$500k-$2M", "$2M+"] %}
-                <option value="{{ option }}" {% if answers.revenue == option %}selected{% endif %}>{{ option }}</option>
+                {% for option in ["Just getting started", "Implementing projects", "Leading initiatives", "Want to shape sector strategy", "Other"] %}
+                <option value="{{ option }}" {% if answers.journey_stage == option %}selected{% endif %}>{{ option }}</option>
                 {% endfor %}
             </select>
         </label>
-        <label>Years with CIC
-            <select name="years_with_cic" required>
-                <option value="0" {% if answers.years_with_cic == '0' %}selected{% endif %}>New member</option>
-                <option value="1" {% if answers.years_with_cic == '1' %}selected{% endif %}>1 year</option>
-                <option value="2" {% if answers.years_with_cic == '2' %}selected{% endif %}>2 years</option>
-                <option value="3" {% if answers.years_with_cic == '3' %}selected{% endif %}>3+ years</option>
+
+        <label>4. Which benefit is most important to you year 1?
+            <select name="year1_benefit" required>
+                <option value="">Select one</option>
+                {% for option in ["Weekly/daily news and policy updates", "Networking with government & businesses", "Attending forums and workshops", "Serving on committees or advisory groups", "Other"] %}
+                <option value="{{ option }}" {% if answers.year1_benefit == option %}selected{% endif %}>{{ option }}</option>
+                {% endfor %}
             </select>
         </label>
+
+        <label>5. Are you interested in influence/governance opportunities?
+            <select name="governance_interest" required>
+                <option value="">Select one</option>
+                {% for option in ["Yes : policy input/strategy", "Yes: committee work", "Maybe later", "Not right now"] %}
+                <option value="{{ option }}" {% if answers.governance_interest == option %}selected{% endif %}>{{ option }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>6. What type of events do you want to engage in?
+            <select name="event_type" required>
+                <option value="">Select one</option>
+                {% for option in ["High-level policy & advocacy discussions", "Practical training or workshops", "Multi-sector collaboration events", "Local community circular economy activities", "Other"] %}
+                <option value="{{ option }}" {% if answers.event_type == option %}selected{% endif %}>{{ option }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>7. How much involvement do you want over the next 12 months?
+            <select name="involvement_level" required>
+                <option value="">Select one</option>
+                {% for option in ["Observe & consume resources/events", "Participate in a few events", "Actively collaborate on projects", "Lead discussions or workstreams", "Other"] %}
+                <option value="{{ option }}" {% if answers.involvement_level == option %}selected{% endif %}>{{ option }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>8. What do you hope CIC helps you accomplish by Year 2?
+            <select name="year2_goal" required>
+                <option value="">Select one</option>
+                {% for option in ["Raise your profile in the sector", "Influence circular economy policy", "Build cross-sector partnerships", "Drive measurable projects in your organization", "Other"] %}
+                <option value="{{ option }}" {% if answers.year2_goal == option %}selected{% endif %}>{{ option }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>9. Which communication style works best for you?
+            <select name="communication_style" required>
+                <option value="">Select one</option>
+                {% for option in ["Monthly updates", "Bi-weekly topic digests", "Real-time alerts", "Only key event notifications"] %}
+                <option value="{{ option }}" {% if answers.communication_style == option %}selected{% endif %}>{{ option }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
         <button class="btn" type="submit">Generate Growth Tree</button>
     </form>
 </section>

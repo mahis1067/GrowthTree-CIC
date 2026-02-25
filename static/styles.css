@@ -26,4 +26,61 @@ select{padding:8px;border-radius:6px;border:1px solid #c8d4d0}
 .celebration{padding:10px;border-radius:8px;background:#fff2cc;border:1px solid #efd88c;margin-bottom:12px}
 table{width:100%;border-collapse:collapse}
 th,td{padding:8px;border-bottom:1px solid #dfebe6;text-align:left}
-@media (max-width: 900px){.sidebar{position:static;width:100%;min-height:auto}.main-content{margin:0;width:100%}.tree-grid{grid-template-columns:1fr}}
+@media (max-width: 900px){.sidebar{position:static;width:100%;min-height:auto}.main-content{margin:0;width:100%}.tree-trunk{left:16px;transform:none}}
+
+
+.growth-tree-diagram{position:relative;padding:16px 0 4px;display:grid;gap:18px}
+.tree-trunk{position:absolute;left:50%;top:0;bottom:0;width:8px;transform:translateX(-50%);background:linear-gradient(#7a4b2a,#a56b3f);border-radius:8px;opacity:.8}
+.year-branch{position:relative;width:calc(50% - 24px);background:#f8fbfa;border:1px solid #deece8;border-radius:12px;padding:12px}
+.year-branch::before{content:"";position:absolute;top:20px;width:26px;height:4px;background:#7a4b2a}
+.branch-year1,.branch-year3{margin-left:0}
+.branch-year1::before,.branch-year3::before{right:-26px}
+.branch-year2{margin-left:auto}
+.branch-year2::before{left:-26px}
+.branch-services{display:grid;gap:8px}
+
+
+.year-tree-list{list-style:none;margin:0;padding:0;display:grid;gap:18px;position:relative}
+.year-node{position:relative;width:calc(50% - 24px);background:#f8fbfa;border:1px solid #deece8;border-radius:12px;padding:12px}
+.year-node::before{content:"";position:absolute;top:20px;width:26px;height:4px;background:#7a4b2a}
+.year-node-title{font-weight:700;margin-bottom:8px;color:#12473d}
+.service-leaves{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.service-leaf{position:relative;padding-left:14px}
+.service-leaf::before{content:"";position:absolute;left:0;top:14px;width:10px;height:2px;background:#88a59e}
+.branch-year1,.branch-year3{margin-left:0}
+.branch-year1::before,.branch-year3::before{right:-26px}
+.branch-year2{margin-left:auto}
+.branch-year2::before{left:-26px}
+.service-node summary{display:flex;justify-content:space-between;align-items:center;gap:8px;cursor:pointer}
+
+@media (max-width: 900px){
+  .tree-trunk{left:16px;transform:none}
+  .year-node,.branch-year2{width:calc(100% - 32px);margin-left:32px}
+  .year-node::before,.branch-year2::before{left:-24px;right:auto}
+}
+
+
+.tree-page{display:grid;gap:18px}
+.tree-header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.tree-header h1{margin:0 0 4px}
+.tree-header p{margin:0;color:#4f6b64}
+.header-actions{display:flex;gap:10px;flex-wrap:wrap}
+.tree-card{overflow:hidden}
+.small-meter{margin:0}
+.plotly-tree{height:440px;width:100%;border:1px solid #deece8;border-radius:12px;background:linear-gradient(180deg,#f9fdfb 0,#f4faf7 100%);margin:10px 0 16px}
+.year-sections{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.year-section{background:#f8fbfa;border:1px solid #deece8;border-radius:10px;padding:12px}
+.year-section h3{margin:0 0 8px}
+.year-section ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.service-item{background:#fff;border:1px solid #d8e4df;border-radius:8px;padding:10px}
+.service-item p{margin:6px 0}
+.service-item-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.service-item-purchased{background:#e8f7ef;border-color:#8dd6b3}
+.stats-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.stat-card p{margin:0;color:#4f6b64}
+.stat-card h2{margin:6px 0 0;color:#1f6f5f}
+
+@media (max-width: 1000px){
+  .year-sections,.stats-grid{grid-template-columns:1fr}
+  .plotly-tree{height:360px}
+}
