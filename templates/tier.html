@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Tier Meter - CIC{% endblock %}
 {% block content %}
-<section class="card">
+<section class="card tier-page">
     <h1>Tier Meter</h1>
     <div class="meter-wrap large">
         <div class="meter" style="--progress: {{ progress }}%;">
@@ -13,5 +13,32 @@
         <li>Services purchased: {{ purchased_count }}</li>
     </ul>
     <p>Bronze: 1 year · Silver: 2 years (policy influence) · Gold: 3+ years (voting privileges)</p>
+</section>
+
+<section class="tier-bundles">
+    <h2>Here’s what you’ll get</h2>
+    <div class="tier-columns">
+        {% for bundle in tier_bundles %}
+        <article class="card tier-card">
+            <h3>{{ bundle.name }} Tier</h3>
+            <p class="tier-summary">{{ bundle.summary }}</p>
+
+            <div class="bundle-services">
+                {% for service in bundle.services %}
+                <details open>
+                    <summary>{{ service.title }}</summary>
+                    <ul>
+                        {% for subservice in service.subservices %}
+                        <li>{{ subservice }}</li>
+                        {% endfor %}
+                    </ul>
+                </details>
+                {% endfor %}
+            </div>
+
+            <div class="tier-price">${{ bundle.price }}</div>
+        </article>
+        {% endfor %}
+    </div>
 </section>
 {% endblock %}

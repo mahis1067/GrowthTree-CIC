@@ -161,3 +161,44 @@ th,td{padding:8px;border-bottom:1px solid #dfebe6;text-align:left}
   .year-sections,.stats-grid{grid-template-columns:1fr}
   .plotly-tree{height:360px}
 }
+
+.tier-page{margin-bottom:16px}
+.tier-bundles h2{margin:0 0 12px}
+.tier-columns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.tier-card h3{margin:0}
+.tier-summary{margin:4px 0 10px;color:#4f6b64;font-weight:600}
+.bundle-services{display:grid;gap:8px}
+.bundle-services details{background:#f8fbfa;border:1px solid #deece8;border-radius:8px;padding:8px}
+.bundle-services summary{cursor:pointer;font-weight:700}
+.bundle-services ul{margin:8px 0 0;padding-left:18px}
+.tier-price{margin-top:14px;font-size:34px;font-weight:700;color:#12473d}
+
+.tree-layout{display:grid;grid-template-columns:2fr 1fr;gap:12px;align-items:stretch;margin:10px 0 16px}
+.growth-visual{display:grid;gap:8px;align-content:start;background:#f9fdfb;border:1px solid #deece8}
+.growth-visual h3{margin:0}
+.stage-drawing{position:relative;height:260px;border-radius:10px;background:linear-gradient(#eef8f2,#f9fdfb)}
+.stage-drawing .ground{position:absolute;left:12px;right:12px;bottom:16px;height:16px;background:#d5e8db;border-radius:30px}
+.stage-drawing .trunk{position:absolute;left:50%;bottom:30px;transform:translateX(-50%);width:16px;height:80px;background:#7a4b2a;border-radius:8px}
+.stage-drawing .branch{position:absolute;top:122px;width:52px;height:8px;background:#7a4b2a;border-radius:8px;opacity:0}
+.stage-drawing .branch.left{left:calc(50% - 52px);transform:rotate(-30deg);transform-origin:right center}
+.stage-drawing .branch.right{left:50%;transform:rotate(30deg);transform-origin:left center}
+.stage-drawing .leaf{position:absolute;width:54px;height:54px;border-radius:50%;background:#5aa978;opacity:0}
+.stage-drawing .leaf-1{left:calc(50% - 70px);top:56px}
+.stage-drawing .leaf-2{left:calc(50% + 14px);top:56px}
+.stage-drawing .leaf-3{left:calc(50% - 96px);top:96px}
+.stage-drawing .leaf-4{left:calc(50% + 42px);top:96px}
+
+.stage-sapling .trunk{height:56px}
+.stage-sapling .leaf-1,.stage-sapling .leaf-2{opacity:1;width:42px;height:42px;top:78px}
+
+.stage-branching .trunk{height:86px}
+.stage-branching .branch.left,.stage-branching .branch.right{opacity:1}
+.stage-branching .leaf-1,.stage-branching .leaf-2,.stage-branching .leaf-3{opacity:1}
+
+.stage-full_tree .trunk{height:100px}
+.stage-full_tree .branch.left,.stage-full_tree .branch.right{opacity:1}
+.stage-full_tree .leaf{opacity:1}
+
+@media (max-width: 1000px){
+  .tier-columns,.tree-layout{grid-template-columns:1fr}
+}

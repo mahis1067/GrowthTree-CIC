@@ -9,6 +9,7 @@ app.secret_key = "cic-growth-tree-dev"
 
 
 DATA_PATH = Path(__file__).with_name("info.json")
+TIER_BUNDLE_PATH = Path(__file__).with_name("entities").joinpath("tier_bundles.json")
 
 
 def load_services():
@@ -17,9 +18,16 @@ def load_services():
         return json.load(file)
 
 
+def load_tier_bundles():
+    with TIER_BUNDLE_PATH.open("r", encoding="utf-8") as file:
+        return json.load(file)
+
+
 SERVICES = load_services()  # Load all services from the JSON file
+TIER_BUNDLES = load_tier_bundles()
 # Create a dictionary mapping service titles to their full data for quick lookup
 SERVICES_BY_TITLE = {service["title"]: service for service in SERVICES}
+TIER_ORDER = ["Bronze", "Silver", "Gold"]
 
 
 def default_tree():
@@ -53,7 +61,7 @@ def merge_purchased_into_tree(tree, purchased):
 
 def service_match_score(service, answers):
     # Get tags from the service (used to match user answers)
-    tags = service.get("tags", {}) or {}
+    tags = service.get("recommend_if", {}) or service.get("tags", {}) or {}
     if not tags:
         return 1
 
@@ -72,16 +80,35 @@ def service_match_score(service, answers):
             score -= 1
     return score
 
+def accessible_tiers(current_tier):
+    if current_tier not in TIER_ORDER:
+        return ["Bronze"]
+    return TIER_ORDER[: TIER_ORDER.index(current_tier) + 1]
+
+
+def bundle_services_for_tier(current_tier):
+    unlocked = set(accessible_tiers(current_tier))
+    bundled = []
+    for tier in TIER_BUNDLES.get("tiers", []):
+        if tier.get("name") in unlocked:
+            for service in tier.get("services", []):
+                enriched = dict(service)
+                enriched["tier"] = tier.get("name")
+                bundled.append(enriched)
+    return bundled
+
 
 def generate_growth_tree(answers):
     # Start with an empty tree
     tree = default_tree()
     year_keys = ["year1", "year2", "year3"]
+    current_tier = calculate_tier()
+    bundled_services = bundle_services_for_tier(current_tier)
 
     scored_services = []
     # Score each service based on user answers
-    for service in SERVICES:
-        target_year = service.get("year", "year2")  # Default to year2 if missing
+    for service in bundled_services:
+        target_year = service.get("preferred_year", "year2")  # Default to year2 if missing
         if target_year not in year_keys:
             target_year = "year2"
         score = service_match_score(service, answers)
@@ -145,6 +172,16 @@ def tier_progress_percent():
     tier = calculate_tier()
     return {"New Member": 10, "Bronze": 35, "Silver": 68, "Gold": 100}[tier]
 
+
+
+
+def tier_growth_stage(tier_name):
+    return {
+        "New Member": "sapling",
+        "Bronze": "sapling",
+        "Silver": "branching",
+        "Gold": "full_tree",
+    }[tier_name]
 
 def current_discount_percent():
     # Return discount based on tier
@@ -216,10 +253,12 @@ def tree():
     total_spent = sum(item["price"] for item in purchased_items)
 
     # Render tree page with all relevant data
+    current_tier = calculate_tier()
     return render_template(
         "tree.html",
         tree=tree_data,
-        tier=calculate_tier(),
+        tier=current_tier,
+        growth_stage=tier_growth_stage(current_tier),
         progress=tier_progress_percent(),
         services_map=SERVICES_BY_TITLE,
         purchased=set(purchased_names),
@@ -269,12 +308,14 @@ def buy(service_name):
 @app.route("/tier")
 def tier():
     # display user's current tier and progress
+    current_tier = calculate_tier()
     return render_template(
         "tier.html",
-        tier=calculate_tier(),
+        tier=current_tier,
         progress=tier_progress_percent(),
         purchased_count=len(session.get("purchased", [])),
         years_with_cic=session.get("membership_years", "0"),
+        tier_bundles=TIER_BUNDLES.get("tiers", []),
     )
 
 
