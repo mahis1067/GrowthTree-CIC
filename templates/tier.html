@@ -2,16 +2,20 @@
 {% block title %}Tier Meter - CIC{% endblock %}
 {% block content %}
 <section class="card">
-    <h1>Tier Meter</h1>
+    <h1>Tier Meter</h1> <!-- Page heading -->
+    <!-- Visual progress meter showing user’s tier -->
     <div class="meter-wrap large">
+        <!-- CSS variable (--progress) controls how full the meter appears -->
         <div class="meter" style="--progress: {{ progress }}%;">
-            <span>{{ tier }}</span>
+            <span>{{ tier }}</span> <!-- Display current tier inside the meter -->
         </div>
     </div>
+    <!-- Display user stats -->
     <ul>
-        <li>Years with CIC: {{ years_with_cic }}</li>
-        <li>Services purchased: {{ purchased_count }}</li>
+        <li>Years with CIC: {{ years_with_cic }}</li> <!-- Number of membership years -->
+        <li>Services purchased: {{ purchased_count }}</li> <!-- Number of purchased services -->
     </ul>
+    <!-- Explanation of tier system -->
     <p>Bronze: 1 year · Silver: 2 years (policy influence) · Gold: 3+ years (voting privileges)</p>
 </section>
 {% endblock %}
