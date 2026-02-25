@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Tier Meter - CIC{% endblock %}
+{% block content %}
+<section class="card">
+    <h1>Tier Meter</h1>
+    <div class="meter-wrap large">
+        <div class="meter" style="--progress: {{ progress }}%;">
+            <span>{{ tier }}</span>
+        </div>
+    </div>
+    <ul>
+        <li>Years with CIC: {{ years_with_cic }}</li>
+        <li>Services purchased: {{ purchased_count }}</li>
+    </ul>
+    <p>Bronze: 1 year · Silver: 2 years (policy influence) · Gold: 3+ years (voting privileges)</p>
+</section>
+{% endblock %}
