@@ -1,22 +1,99 @@
 :root { --bg:#f3f7f4; --brand:#1f6f5f; --card:#fff; }
 *{box-sizing:border-box;font-family:Arial,sans-serif}
-body{margin:0;display:flex;background:var(--bg);color:#1b2a26}
-.sidebar{width:240px;min-height:100vh;background:#0f3f35;color:#fff;padding:20px;position:fixed}
-.sidebar a{display:block;color:#dff5ef;text-decoration:none;padding:8px 0}
-.main-content{margin-left:240px;padding:24px;width:calc(100% - 240px)}
-.card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 6px 22px rgba(0,0,0,.08)}
-.btn{display:inline-block;background:var(--brand);color:#fff;padding:8px 12px;border-radius:8px;text-decoration:none;border:none;cursor:pointer}
-.btn-secondary{background:#4e7f77}
-.actions{display:flex;gap:12px;margin-top:12px}
-.grid-form{display:grid;gap:12px;max-width:560px}
-label{display:grid;gap:6px;font-weight:600}
-select{padding:8px;border-radius:6px;border:1px solid #c8d4d0}
-.row-between{display:flex;justify-content:space-between;align-items:center}
-.tier-pill{background:#e0f4ef;color:#12473d;padding:6px 10px;border-radius:999px;font-weight:700}
-.tree-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
-.tree-grid article{background:#f8fbfa;border:1px solid #deece8;border-radius:10px;padding:12px}
-.service-node{margin:8px 0;padding:8px;background:#fff;border-radius:8px;border:1px solid #d8e4df}
-.service-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+
+body{
+    margin:0;
+    display:flex;background:var(--bg);color:#1b2a26}
+
+.sidebar{
+        width:240px;
+        min-height:100vh;
+        background:#0f3f35;
+        color:#fff;padding:
+        20px;position:fixed}
+
+.sidebar a{
+            display:block;
+            color:#dff5ef;
+            text-decoration:none;
+            padding:8px 0}
+
+.main-content{
+               margin-left:240px;
+               padding:24px;
+               width:calc(100% - 240px)}
+
+.card{
+        background:var(--card);
+        border-radius:12px;
+        padding:20px;
+        box-shadow:0 6px 22px rgba(0,0,0,.08)}
+
+.btn{
+    display:inline-block;
+    background:var(--brand);
+    color:#fff;
+    padding:8px 12px;
+    border-radius:8px;
+    text-decoration:none;
+    border:none;
+    cursor:pointer}
+
+.btn-secondary{
+                background:#4e7f77}
+.actions{
+        display:flex;
+        gap:12px;
+        margin-top:12px}
+
+.grid-form{
+            display:grid;
+            gap:12px;
+            max-width:560px}
+
+label{
+        display:grid;
+        gap:6px;
+        font-weight:600}
+
+select{
+        padding:8px;
+        border-radius:6px;
+        border:1px solid #c8d4d0}
+
+.row-between{
+             display:flex;
+             justify-content:space-between;
+             align-items:center}
+
+.tier-pill{
+            background:#e0f4ef;
+            color:#12473d;
+            padding:6px 10px;
+            border-radius:999px;
+            font-weight:700}
+
+.tree-grid{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:16px;margin-top:16px}
+
+.tree-grid article{
+                    background:#f8fbfa;
+                    border:1px solid #deece8;
+                    border-radius:10px;
+                    padding:12px}
+
+.service-node{
+                margin:8px 0;
+                padding:8px;
+                background:#fff;
+                border-radius:8px;
+                border:1px solid #d8e4df}
+
+.service-list{
+                display:grid;
+                grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
 .service-card{background:#f8fbfa;border-radius:8px;padding:12px;border:1px solid #deece8}
 .owned{font-weight:700;color:#1f6f5f}
 .meter-wrap{text-align:center;margin:10px 0 20px}
