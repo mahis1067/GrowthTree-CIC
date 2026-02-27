@@ -16,7 +16,25 @@
 </section>
 
 <section class="tier-bundles">
-    <h2>Here’s what you’ll get</h2>
+    <h2>General Bundle (Shown before the personalized quiz)</h2>
+    <div class="tier-columns">
+        {% for item in general_bundle %}
+        <article class="card tier-card">
+            <h3>{{ item.tier }} Tier</h3>
+            <p class="tier-summary"><strong>{{ item.label }}</strong></p>
+            <p>{{ item.description }}</p>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="tier-bundles">
+    <h2>Detailed Services by Tier</h2>
+    {% if has_quiz %}
+    <p>Your quiz answers are used to prioritize these services in your growth tree recommendations.</p>
+    {% else %}
+    <p>Take the quiz to receive personalized service recommendations within these tiers.</p>
+    {% endif %}
     <div class="tier-columns">
         {% for bundle in tier_bundles %}
         <article class="card tier-card">

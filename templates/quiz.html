@@ -2,24 +2,18 @@
 {% block title %}Quiz - CIC Growth Tree{% endblock %}
 {% block content %}
 <section class="card quiz-card">
-    <h1>Personalization Quiz</h1> <!-- Page heading -->
-    <!-- Short description for the user -->
+    <h1>Personalization Quiz</h1>
     <p>Retake this quiz any time. Previously purchased services remain in your roadmap.</p>
-    <!-- Form that submits user answers using POST -->
     <form method="post" class="grid-form">
-        <!-- Question 1: Organization type -->
         <label>1. Which best describes your organization?
             <select name="organization_type" required>
                 <option value="">Select one</option>
-                <!-- Loop through predefined options -->
-                {% for option in ["Municipality", "Business (small / medium / large)", "Public institution (school, hospital)", "Nonprofit or association", "Individual / consultant", "Other"] %}
-                <!-- Set option as selected if it matches previously saved answer -->
+                {% for option in ["Public institution (school, library)", "Small business / nonprofit", "Municipality / government", "Large organization (business or nonprofit)", "Individual / student / family", "Other"] %}
                 <option value="{{ option }}" {% if answers.organization_type == option %}selected{% endif %}>{{ option }}</option>
                 {% endfor %}
             </select>
         </label>
 
-        <!-- Question 2: Reason for joining -->
         <label>2. What’s your primary reason for joining CIC?
             <select name="primary_reason" required>
                 <option value="">Select one</option>
@@ -29,7 +23,6 @@
             </select>
         </label>
 
-        <!-- Question 3: User's stage in cirecular economy journey -->
         <label>3. Where are you on your circular economy journey?
             <select name="journey_stage" required>
                 <option value="">Select one</option>
@@ -39,8 +32,7 @@
             </select>
         </label>
 
-        <!-- Question 4: Most important benefits in Year 1 -->
-        <label>4. Which benefit is most important to you year 1?
+        <label>4. Which benefit is most important to you in year 1?
             <select name="year1_benefit" required>
                 <option value="">Select one</option>
                 {% for option in ["Weekly/daily news and policy updates", "Networking with government & businesses", "Attending forums and workshops", "Serving on committees or advisory groups", "Other"] %}
@@ -49,7 +41,6 @@
             </select>
         </label>
 
-        <!-- Question 5: Interest in governace roles -->
         <label>5. Are you interested in influence/governance opportunities?
             <select name="governance_interest" required>
                 <option value="">Select one</option>
@@ -59,27 +50,24 @@
             </select>
         </label>
 
-        <!-- Question 6: Preferred event types -->
         <label>6. What type of events do you want to engage in?
             <select name="event_type" required>
                 <option value="">Select one</option>
-                {% for option in ["High-level policy & advocacy discussions", "Practical training or workshops", "Multi-sector collaboration events", "Local community circular economy activities", "Other"] %}
+                {% for option in ["High-level policy and advocacy discussions", "Practical training or workshops", "Multi-Sector Collaboration Events", "Local community circular economy activities", "Other"] %}
                 <option value="{{ option }}" {% if answers.event_type == option %}selected{% endif %}>{{ option }}</option>
                 {% endfor %}
             </select>
         </label>
 
-        <!-- Question 7: Desired level of involvement -->
         <label>7. How much involvement do you want over the next 12 months?
             <select name="involvement_level" required>
                 <option value="">Select one</option>
-                {% for option in ["Observe & consume resources/events", "Participate in a few events", "Actively collaborate on projects", "Lead discussions or workstreams", "Other"] %}
+                {% for option in ["Observe and consume resources/events", "Participate in a few events", "Actively collaborate on projects", "Lead discussions or workstreams", "Other"] %}
                 <option value="{{ option }}" {% if answers.involvement_level == option %}selected{% endif %}>{{ option }}</option>
                 {% endfor %}
             </select>
         </label>
 
-        <!-- Question 8: Goals by Year 2 -->
         <label>8. What do you hope CIC helps you accomplish by Year 2?
             <select name="year2_goal" required>
                 <option value="">Select one</option>
@@ -89,7 +77,6 @@
             </select>
         </label>
 
-        <!-- Question 9: Preferred communication style -->
         <label>9. Which communication style works best for you?
             <select name="communication_style" required>
                 <option value="">Select one</option>
@@ -99,7 +86,6 @@
             </select>
         </label>
 
-        <!-- Submit button to send form data -->
         <button class="btn" type="submit">Generate Growth Tree</button>
     </form>
 </section>
