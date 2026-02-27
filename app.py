@@ -1,4 +1,5 @@
 import json
+import secrets
 from pathlib import Path
 
 from flask import Flask, redirect, render_template, request, session, url_for
@@ -6,6 +7,7 @@ from flask import Flask, redirect, render_template, request, session, url_for
 
 app = Flask(__name__)
 app.secret_key = "cic-growth-tree-dev"
+APP_RUN_ID = secrets.token_hex(8)
 
 
 DATA_PATH = Path(__file__).with_name("info.json")
@@ -219,6 +221,16 @@ def purchased_details():
     purchased = session.get("purchased", [])
     details = [SERVICES_BY_TITLE[name] for name in purchased if name in SERVICES_BY_TITLE]
     return details
+
+
+
+
+@app.before_request
+def reset_session_on_new_server_run():
+    # Ensure every new Flask run starts with a clean browser session state.
+    if session.get("_app_run_id") != APP_RUN_ID:
+        session.clear()
+        session["_app_run_id"] = APP_RUN_ID
 
 
 @app.route("/")
