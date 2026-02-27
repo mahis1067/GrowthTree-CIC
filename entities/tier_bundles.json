@@ -2,156 +2,92 @@
   "tiers": [
     {
       "name": "Bronze",
-      "summary": "Informational services",
+      "summary": "Information Services",
       "price": 100,
       "growth_stage": "sapling",
       "services": [
         {
           "title": "Access Information",
           "subservices": [
-            "Daily and weekly circular economy intelligence briefings",
-            "Member-only policy and regulation explainers"
+            "Access verified information about waste reduction.",
+            "Access verified information about circular economy.",
+            "Access verified information about resource recovery issues.",
+            "Access CIC research and publications.",
+            "Access the Resource Library.",
+            "Receive notifications for workshops, forums, and events."
           ],
-          "preferred_year": "year1",
-          "recommend_if": {
-            "primary_reason": [
-              "Access trusted information & research"
-            ],
-            "year1_benefit": [
-              "Weekly/daily news and policy updates"
-            ],
-            "communication_style": [
-              "Real-time alerts",
-              "Bi-weekly topic digests"
-            ]
-          }
+          "preferred_year": "year1"
         },
         {
           "title": "Stay Informed",
           "subservices": [
-            "Curated daily highlights and member announcements",
-            "Policy watchlist and sector opportunity alerts"
+            "Email list about circular news and events from around the world.",
+            "Email list about policy and industry updates.",
+            "Email list about partner events.",
+            "Circular Innovation Council announcements and updates."
           ],
-          "preferred_year": "year1",
-          "recommend_if": {
-            "year1_benefit": [
-              "Weekly/daily news and policy updates"
-            ],
-            "involvement_level": [
-              "Observe & consume resources/events",
-              "Participate in a few events"
-            ]
-          }
+          "preferred_year": "year1"
         },
         {
           "title": "Multi-Sectoral Perspectives",
           "subservices": [
-            "Cross-sector issue briefings and perspectives",
-            "Peer insights from municipalities, nonprofits, and businesses"
+            "Neutral-setting discussions about priority environmental issues.",
+            "Perspectives from governments, industry, SMEs, individuals, non-profits, and more."
           ],
-          "preferred_year": "year2",
-          "recommend_if": {
-            "organization_type": [
-              "Municipality",
-              "Public institution (school, hospital)",
-              "Nonprofit or association"
-            ],
-            "event_type": [
-              "Multi-sector collaboration events"
-            ]
-          }
+          "preferred_year": "year1"
         }
       ]
     },
     {
       "name": "Silver",
-      "summary": "Relationship and financial services",
+      "summary": "Relationship Services + Financial Services",
       "price": 100,
       "growth_stage": "branching",
       "services": [
         {
           "title": "Networking Forum",
           "subservices": [
-            "Facilitated cross-sector networking sessions",
-            "Matchmaking with partners and policymakers"
+            "Connect with governments of all levels.",
+            "Connect with environmental non-profits.",
+            "Connect with environmental consultants and businesses."
           ],
-          "preferred_year": "year2",
-          "recommend_if": {
-            "primary_reason": [
-              "Connect with policymakers and peers"
-            ],
-            "year2_goal": [
-              "Build cross-sector partnerships",
-              "Raise your profile in the sector"
-            ],
-            "involvement_level": [
-              "Actively collaborate on projects",
-              "Lead discussions or workstreams"
-            ]
-          }
+          "preferred_year": "year2"
         },
         {
           "title": "Reduced Rates",
           "subservices": [
-            "Discounted registration for CIC events and workshops",
-            "Reduced-cost access to member training resources"
+            "Reduced rates for forums.",
+            "Reduced rates for workshops.",
+            "Reduced rates for seminars.",
+            "Reduced rates for CIC or partner special events."
           ],
-          "preferred_year": "year2",
-          "recommend_if": {
-            "primary_reason": [
-              "Attend events/workshops at reduced cost"
-            ],
-            "event_type": [
-              "Practical training or workshops",
-              "Local community circular economy activities"
-            ]
-          }
+          "preferred_year": "year2"
         }
       ]
     },
     {
       "name": "Gold",
-      "summary": "Influential services",
+      "summary": "Influential Services",
       "price": 100,
       "growth_stage": "full_tree",
       "services": [
         {
           "title": "Voting Privileges",
           "subservices": [
-            "Participation in governance and strategic votes",
-            "Formal voice in annual member resolutions"
+            "Vote at the annual general meeting.",
+            "Run for a seat on the Board of Directors.",
+            "Participate in the Program Development Committee.",
+            "Participate in the Event Committee."
           ],
-          "preferred_year": "year3",
-          "recommend_if": {
-            "governance_interest": [
-              "Yes : policy input/strategy",
-              "Yes: committee work"
-            ],
-            "year2_goal": [
-              "Influence circular economy policy"
-            ]
-          }
+          "preferred_year": "year3"
         },
         {
           "title": "Influence",
           "subservices": [
-            "Leadership opportunities in CIC committees",
-            "Strategy co-design with policy and industry leaders"
+            "Influence policy inputs.",
+            "Influence how CIC adapts its policies to changing conditions and government perspectives."
           ],
-          "preferred_year": "year3",
-          "recommend_if": {
-            "primary_reason": [
-              "Influence policy and strategy",
-              "Participate in committees or governance"
-            ],
-            "involvement_level": [
-              "Lead discussions or workstreams"
-            ],
-            "journey_stage": [
-              "Leading initiatives",
-              "Want to shape sector strategy"
-            ]
-          }
+          "preferred_year": "year3"
         }
       ]
     }
