@@ -107,6 +107,16 @@ def accessible_tiers(current_tier):
     return TIER_ORDER[: TIER_ORDER.index(current_tier) + 1]
 
 
+def selected_bundle_tier():
+    selected = session.get("selected_bundle")
+    if selected in TIER_ORDER:
+        return selected
+    calculated = calculate_tier()
+    if calculated in TIER_ORDER:
+        return calculated
+    return "Bronze"
+
+
 def bundle_services_for_tier(current_tier):
     unlocked = set(accessible_tiers(current_tier))
     bundled = []
@@ -123,7 +133,7 @@ def generate_growth_tree(answers):
     # Start with an empty tree
     tree = default_tree()
     year_keys = ["year1", "year2", "year3"]
-    current_tier = calculate_tier()
+    current_tier = selected_bundle_tier()
     bundled_services = bundle_services_for_tier(current_tier)
 
     service_scores = compute_service_scores(answers, bundled_services)
@@ -266,8 +276,12 @@ def quiz():
 
         return redirect(url_for("tree"))
 
+    # Ask users to choose a bundle before the quiz
+    if not session.get("selected_bundle"):
+        return redirect(url_for("tier"))
+
     # Render quiz page with previous answers
-    return render_template("quiz.html", answers=session.get("quiz_answers", {}))
+    return render_template("quiz.html", answers=session.get("quiz_answers", {}), selected_bundle=session.get("selected_bundle"))
 
 
 @app.route("/tree")
@@ -286,7 +300,7 @@ def tree():
     total_spent = sum(item["price"] for item in purchased_items)
 
     # Render tree page with all relevant data
-    current_tier = calculate_tier()
+    current_tier = selected_bundle_tier()
     return render_template(
         "tree.html",
         tree=tree_data,
@@ -338,10 +352,28 @@ def buy(service_name):
     return redirect(request.args.get("next") or url_for("tree"))
 
 
+@app.route("/select-bundle/<tier_name>")
+def select_bundle(tier_name):
+    # user chooses the starting bundle before taking the quiz
+    if tier_name not in TIER_ORDER:
+        return redirect(url_for("tier"))
+
+    session["selected_bundle"] = tier_name
+    session["tier"] = tier_name
+
+    tier_to_years = {"Bronze": "1", "Silver": "2", "Gold": "3"}
+    session["membership_years"] = tier_to_years.get(tier_name, "0")
+
+    if "quiz_answers" in session:
+        session["growth_tree"] = generate_growth_tree(session["quiz_answers"])
+
+    return redirect(url_for("quiz"))
+
+
 @app.route("/tier")
 def tier():
     # display user's current tier and progress
-    current_tier = calculate_tier()
+    current_tier = selected_bundle_tier()
     return render_template(
         "tier.html",
         tier=current_tier,
@@ -351,6 +383,7 @@ def tier():
         tier_bundles=TIER_BUNDLES.get("tiers", []),
         general_bundle=RECOMMENDATION_RULES.get("general_bundle", []),
         has_quiz=bool(session.get("quiz_answers")),
+        selected_bundle=session.get("selected_bundle"),
     )
 
 

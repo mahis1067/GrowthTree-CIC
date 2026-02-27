@@ -3,7 +3,7 @@
     {
       "name": "Bronze",
       "summary": "Information Services",
-      "price": 100,
+      "price": 300,
       "growth_stage": "sapling",
       "services": [
         {
@@ -41,7 +41,7 @@
     {
       "name": "Silver",
       "summary": "Relationship Services + Financial Services",
-      "price": 100,
+      "price": 900,
       "growth_stage": "branching",
       "services": [
         {
@@ -68,7 +68,7 @@
     {
       "name": "Gold",
       "summary": "Influential Services",
-      "price": 100,
+      "price": 1200,
       "growth_stage": "full_tree",
       "services": [
         {
