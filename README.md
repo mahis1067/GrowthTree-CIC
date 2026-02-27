@@ -90,7 +90,6 @@ After the quiz is submitted, the app stores all answers and uses all quiz fields
 - `organization_type`
 - `primary_reason`
 - `journey_stage`
-- `year1_benefit`
 - `governance_interest`
 - `event_type`
 - `involvement_level`

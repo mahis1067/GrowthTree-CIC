@@ -91,9 +91,12 @@ def accessible_tiers(current_tier):
 
 def selected_bundle_tier():
     selected = session.get("selected_bundle")
+    calculated = calculate_tier()
+
+    if selected in TIER_ORDER and calculated in TIER_ORDER:
+        return TIER_ORDER[max(TIER_ORDER.index(selected), TIER_ORDER.index(calculated))]
     if selected in TIER_ORDER:
         return selected
-    calculated = calculate_tier()
     if calculated in TIER_ORDER:
         return calculated
     return "Bronze"
@@ -184,14 +187,6 @@ def tier_progress_percent():
 
 
 
-def tier_growth_stage(tier_name):
-    return {
-        "New Member": "sapling",
-        "Bronze": "sapling",
-        "Silver": "branching",
-        "Gold": "full_tree",
-    }[tier_name]
-
 def current_discount_percent():
     # Return discount based on tier
     tier = calculate_tier()
@@ -281,7 +276,6 @@ def tree():
         "tree.html",
         tree=tree_data,
         tier=current_tier,
-        growth_stage=tier_growth_stage(current_tier),
         progress=tier_progress_percent(),
         services_map=SERVICES_BY_TITLE,
         purchased=set(purchased_names),
@@ -323,6 +317,10 @@ def buy(service_name):
     session["tier"] = new_tier
     if old_tier and old_tier != new_tier:
         session["celebration"] = f"Great work! You reached {new_tier} tier."
+
+    # Rebuild recommendations when tier unlocks new service levels.
+    if "quiz_answers" in session:
+        session["growth_tree"] = generate_growth_tree(session["quiz_answers"])
 
     # Redirect back to previous page or tree
     return redirect(request.args.get("next") or url_for("tree"))

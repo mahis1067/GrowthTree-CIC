@@ -20,7 +20,7 @@
     <h2>Choose your starting bundle</h2>
     <div class="tier-columns">
         {% for bundle in tier_bundles %}
-        <article class="card tier-card">
+        <article class="card tier-card tier-{{ bundle.name|lower }}">
             <h3>{{ bundle.name }} Tier</h3>
             <p class="tier-summary">{{ bundle.summary }}</p>
             <p><strong>${{ bundle.price }}</strong> initial membership</p>
@@ -45,7 +45,7 @@
     <h2>General Bundle (Shown before the personalized quiz)</h2>
     <div class="tier-columns">
         {% for item in general_bundle %}
-        <article class="card tier-card">
+        <article class="card tier-card tier-{{ item.tier|lower }}">
             <h3>{{ item.tier }} Tier</h3>
             <p class="tier-summary"><strong>{{ item.label }}</strong></p>
             <p>{{ item.description }}</p>
@@ -63,7 +63,7 @@
     {% endif %}
     <div class="tier-columns">
         {% for bundle in tier_bundles %}
-        <article class="card tier-card">
+        <article class="card tier-card tier-{{ bundle.name|lower }}">
             <h3>{{ bundle.name }} Tier</h3>
             <p class="tier-summary">{{ bundle.summary }}</p>
 
