@@ -10,6 +10,7 @@ app.secret_key = "cic-growth-tree-dev"
 
 DATA_PATH = Path(__file__).with_name("info.json")
 TIER_BUNDLE_PATH = Path(__file__).with_name("entities").joinpath("tier_bundles.json")
+RULES_PATH = Path(__file__).with_name("entities").joinpath("recommendation_rules.json")
 
 
 def load_services():
@@ -23,8 +24,14 @@ def load_tier_bundles():
         return json.load(file)
 
 
+def load_recommendation_rules():
+    with RULES_PATH.open("r", encoding="utf-8") as file:
+        return json.load(file)
+
+
 SERVICES = load_services()  # Load all services from the JSON file
 TIER_BUNDLES = load_tier_bundles()
+RECOMMENDATION_RULES = load_recommendation_rules()
 # Create a dictionary mapping service titles to their full data for quick lookup
 SERVICES_BY_TITLE = {service["title"]: service for service in SERVICES}
 TIER_ORDER = ["Bronze", "Silver", "Gold"]
@@ -59,26 +66,38 @@ def merge_purchased_into_tree(tree, purchased):
 
 
 
-def service_match_score(service, answers):
-    # Get tags from the service (used to match user answers)
-    tags = service.get("recommend_if", {}) or service.get("tags", {}) or {}
-    if not tags:
-        return 1
+def org_category_from_answers(answers):
+    org_type = answers.get("organization_type", "")
+    org_map = RECOMMENDATION_RULES.get("org_type_map", {})
+    return org_map.get(org_type, "individual")
 
-    score = 0
-    # Loop through each tag category
-    for field, expected_values in tags.items():
+
+def compute_service_scores(answers, bundled_services):
+    scores = {}
+    tier_weight = RECOMMENDATION_RULES.get("tier_weight", {})
+
+    for service in bundled_services:
+        service_title = service.get("title")
+        tier_name = service.get("tier", "Bronze")
+        scores[service_title] = tier_weight.get(tier_name, 1)
+
+    org_category = org_category_from_answers(answers)
+    org_boosts = RECOMMENDATION_RULES.get("organization_boosts", {}).get(org_category, {})
+    for service_title, boost in org_boosts.items():
+        if service_title in scores:
+            scores[service_title] += boost
+
+    question_boosts = RECOMMENDATION_RULES.get("question_boosts", {})
+    for field, field_rules in question_boosts.items():
         answer = answers.get(field)
         if not answer:
             continue
-        # Normalize expected values (lowercase, trimmed)
-        normalized_expected = [str(value).strip().lower() for value in expected_values]
-        # If user's answer matches expected values, increase score
-        if str(answer).strip().lower() in normalized_expected:
-            score += 3
-        else:
-            score -= 1
-    return score
+        service_boosts = field_rules.get(answer, {})
+        for service_title, boost in service_boosts.items():
+            if service_title in scores:
+                scores[service_title] += boost
+
+    return scores
 
 def accessible_tiers(current_tier):
     if current_tier not in TIER_ORDER:
@@ -105,13 +124,15 @@ def generate_growth_tree(answers):
     current_tier = calculate_tier()
     bundled_services = bundle_services_for_tier(current_tier)
 
+    service_scores = compute_service_scores(answers, bundled_services)
     scored_services = []
-    # Score each service based on user answers
+    # Score each service based on decision-tree rule mapping.
+    # Note: communication style (Q9) is intentionally excluded from recommendation scoring.
     for service in bundled_services:
         target_year = service.get("preferred_year", "year2")  # Default to year2 if missing
         if target_year not in year_keys:
             target_year = "year2"
-        score = service_match_score(service, answers)
+        score = service_scores.get(service.get("title"), 0)
         scored_services.append((target_year, score, service))
 
     # Process each year seperately
@@ -316,6 +337,8 @@ def tier():
         purchased_count=len(session.get("purchased", [])),
         years_with_cic=session.get("membership_years", "0"),
         tier_bundles=TIER_BUNDLES.get("tiers", []),
+        general_bundle=RECOMMENDATION_RULES.get("general_bundle", []),
+        has_quiz=bool(session.get("quiz_answers")),
     )
 
 
