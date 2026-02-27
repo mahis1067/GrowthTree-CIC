@@ -11,12 +11,56 @@
     <ul>
         <li>Years with CIC: {{ years_with_cic }}</li>
         <li>Services purchased: {{ purchased_count }}</li>
+        <li>Selected bundle: {{ selected_bundle or 'Not selected yet' }}</li>
     </ul>
-    <p>Bronze: 1 year · Silver: 2 years (policy influence) · Gold: 3+ years (voting privileges)</p>
+    <p>Choose a bundle first, then take the quiz. Recommendations are limited to your chosen bundle scope.</p>
 </section>
 
 <section class="tier-bundles">
-    <h2>Here’s what you’ll get</h2>
+    <h2>Choose your starting bundle</h2>
+    <div class="tier-columns">
+        {% for bundle in tier_bundles %}
+        <article class="card tier-card">
+            <h3>{{ bundle.name }} Tier</h3>
+            <p class="tier-summary">{{ bundle.summary }}</p>
+            <p><strong>${{ bundle.price }}</strong> initial membership</p>
+            <p>
+                {% if bundle.name == 'Bronze' %}
+                Recommends Bronze services first, with higher-tier services introduced as you upgrade.
+                {% elif bundle.name == 'Silver' %}
+                Recommends Bronze + Silver services across Year 1 and Year 2.
+                {% else %}
+                Recommends Bronze + Silver + Gold services across all years.
+                {% endif %}
+            </p>
+            <a class="btn" href="{{ url_for('select_bundle', tier_name=bundle.name) }}">
+                {% if selected_bundle == bundle.name %}Selected{% else %}Choose {{ bundle.name }}{% endif %}
+            </a>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="tier-bundles">
+    <h2>General Bundle (Shown before the personalized quiz)</h2>
+    <div class="tier-columns">
+        {% for item in general_bundle %}
+        <article class="card tier-card">
+            <h3>{{ item.tier }} Tier</h3>
+            <p class="tier-summary"><strong>{{ item.label }}</strong></p>
+            <p>{{ item.description }}</p>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="tier-bundles">
+    <h2>Detailed Services by Tier</h2>
+    {% if has_quiz %}
+    <p>Your quiz answers are prioritizing services within your selected bundle scope.</p>
+    {% else %}
+    <p>After you choose a bundle, take the quiz to receive personalized recommendations.</p>
+    {% endif %}
     <div class="tier-columns">
         {% for bundle in tier_bundles %}
         <article class="card tier-card">
