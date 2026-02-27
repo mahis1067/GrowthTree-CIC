@@ -33,16 +33,8 @@
             </select>
         </label>
 
-        <label>4. Which benefit is most important to you in year 1?
-            <select name="year1_benefit" required>
-                <option value="">Select one</option>
-                {% for option in ["Weekly/daily news and policy updates", "Networking with government & businesses", "Attending forums and workshops", "Serving on committees or advisory groups", "Other"] %}
-                <option value="{{ option }}" {% if answers.year1_benefit == option %}selected{% endif %}>{{ option }}</option>
-                {% endfor %}
-            </select>
-        </label>
 
-        <label>5. Are you interested in influence/governance opportunities?
+        <label>4. Are you interested in influence/governance opportunities?
             <select name="governance_interest" required>
                 <option value="">Select one</option>
                 {% for option in ["Yes : policy input/strategy", "Yes: committee work", "Maybe later", "Not right now"] %}
@@ -51,7 +43,7 @@
             </select>
         </label>
 
-        <label>6. What type of events do you want to engage in?
+        <label>5. What type of events do you want to engage in?
             <select name="event_type" required>
                 <option value="">Select one</option>
                 {% for option in ["High-level policy and advocacy discussions", "Practical training or workshops", "Multi-Sector Collaboration Events", "Local community circular economy activities", "Other"] %}
@@ -60,7 +52,7 @@
             </select>
         </label>
 
-        <label>7. How much involvement do you want over the next 12 months?
+        <label>6. How much involvement do you want over the next 12 months?
             <select name="involvement_level" required>
                 <option value="">Select one</option>
                 {% for option in ["Observe and consume resources/events", "Participate in a few events", "Actively collaborate on projects", "Lead discussions or workstreams", "Other"] %}
@@ -69,7 +61,7 @@
             </select>
         </label>
 
-        <label>8. What do you hope CIC helps you accomplish by Year 2?
+        <label>7. What do you hope CIC helps you accomplish by Year 2?
             <select name="year2_goal" required>
                 <option value="">Select one</option>
                 {% for option in ["Raise your profile in the sector", "Influence circular economy policy", "Build cross-sector partnerships", "Drive measurable projects in your organization", "Other"] %}
@@ -78,7 +70,7 @@
             </select>
         </label>
 
-        <label>9. Which communication style works best for you?
+        <label>8. Which communication style works best for you?
             <select name="communication_style" required>
                 <option value="">Select one</option>
                 {% for option in ["Monthly updates", "Bi-weekly topic digests", "Real-time alerts", "Only key event notifications"] %}

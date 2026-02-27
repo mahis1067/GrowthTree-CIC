@@ -16,122 +16,181 @@
       "description": "Voting privileges and policy influence opportunities."
     }
   ],
-  "org_type_map": {
-    "Public institution (school, library)": "public_institution",
-    "Small business / nonprofit": "small_business_nonprofit",
-    "Municipality / government": "municipality_government",
-    "Large organization (business or nonprofit)": "large_organization",
-    "Individual / student / family": "individual"
-  },
-  "organization_boosts": {
-    "public_institution": {
-      "Access Information": 4,
-      "Stay Informed": 4,
-      "Multi-Sectoral Perspectives": 3,
-      "Networking Forum": 6,
-      "Reduced Rates": 6,
-      "Voting Privileges": 2,
-      "Influence": 2
+  "option_service_map": {
+    "organization_type": {
+      "Public institution (school, library)": [
+        "Access Information",
+        "Stay Informed",
+        "Multi-Sectoral Perspectives"
+      ],
+      "Small business / nonprofit": [
+        "Networking Forum",
+        "Access Information",
+        "Reduced Rates"
+      ],
+      "Municipality / government": [
+        "Access Information",
+        "Influence",
+        "Stay Informed"
+      ],
+      "Large organization (business or nonprofit)": [
+        "Networking Forum",
+        "Voting Privileges",
+        "Influence"
+      ],
+      "Individual / student / family": [
+        "Stay Informed",
+        "Reduced Rates",
+        "Access Information"
+      ],
+      "Other": [
+        "Access Information",
+        "Stay Informed"
+      ]
     },
-    "small_business_nonprofit": {
-      "Access Information": 4,
-      "Stay Informed": 3,
-      "Networking Forum": 6,
-      "Reduced Rates": 6,
-      "Multi-Sectoral Perspectives": 3,
-      "Voting Privileges": 2,
-      "Influence": 2
+    "primary_reason": {
+      "Access trusted information & research": [
+        "Access Information",
+        "Stay Informed"
+      ],
+      "Connect with policymakers and peers": [
+        "Networking Forum",
+        "Multi-Sectoral Perspectives"
+      ],
+      "Attend events/workshops at reduced cost": [
+        "Reduced Rates",
+        "Networking Forum"
+      ],
+      "Influence policy and strategy": [
+        "Influence",
+        "Voting Privileges"
+      ],
+      "Participate in committees or governance": [
+        "Voting Privileges",
+        "Influence"
+      ],
+      "Other": [
+        "Access Information"
+      ]
     },
-    "municipality_government": {
-      "Access Information": 4,
-      "Stay Informed": 3,
-      "Multi-Sectoral Perspectives": 4,
-      "Networking Forum": 6,
-      "Reduced Rates": 5,
-      "Voting Privileges": 3,
-      "Influence": 3
+    "journey_stage": {
+      "Just getting started": [
+        "Access Information",
+        "Stay Informed"
+      ],
+      "Implementing projects": [
+        "Access Information",
+        "Networking Forum"
+      ],
+      "Leading initiatives": [
+        "Networking Forum",
+        "Voting Privileges"
+      ],
+      "Want to shape sector strategy": [
+        "Influence",
+        "Voting Privileges"
+      ],
+      "Other": [
+        "Stay Informed"
+      ]
     },
-    "large_organization": {
-      "Access Information": 3,
-      "Stay Informed": 3,
-      "Networking Forum": 6,
-      "Reduced Rates": 5,
-      "Voting Privileges": 4,
-      "Influence": 4,
-      "Multi-Sectoral Perspectives": 3
+    "governance_interest": {
+      "Yes : policy input/strategy": [
+        "Influence",
+        "Voting Privileges"
+      ],
+      "Yes: committee work": [
+        "Voting Privileges",
+        "Networking Forum"
+      ],
+      "Maybe later": [
+        "Networking Forum",
+        "Reduced Rates"
+      ],
+      "Not right now": [
+        "Access Information",
+        "Stay Informed"
+      ]
     },
-    "individual": {
-      "Access Information": 4,
-      "Stay Informed": 4,
-      "Reduced Rates": 5,
-      "Networking Forum": 4,
-      "Voting Privileges": 2,
-      "Influence": 2,
-      "Multi-Sectoral Perspectives": 3
-    }
-  },
-  "question_boosts": {
     "event_type": {
-      "High-level policy and advocacy discussions": {
-        "Multi-Sectoral Perspectives": 4,
-        "Networking Forum": 4
-      },
-      "Practical training or workshops": {
-        "Access Information": 3,
-        "Reduced Rates": 4
-      },
-      "Multi-Sector Collaboration Events": {
-        "Multi-Sectoral Perspectives": 4,
-        "Networking Forum": 4
-      },
-      "Local community circular economy activities": {
-        "Stay Informed": 3,
-        "Reduced Rates": 4
-      }
+      "High-level policy and advocacy discussions": [
+        "Influence",
+        "Multi-Sectoral Perspectives"
+      ],
+      "Practical training or workshops": [
+        "Reduced Rates",
+        "Access Information"
+      ],
+      "Multi-Sector Collaboration Events": [
+        "Networking Forum",
+        "Multi-Sectoral Perspectives"
+      ],
+      "Local community circular economy activities": [
+        "Stay Informed",
+        "Reduced Rates"
+      ],
+      "Other": [
+        "Stay Informed"
+      ]
     },
     "involvement_level": {
-      "Observe and consume resources/events": {
-        "Access Information": 3,
-        "Reduced Rates": 3
-      },
-      "Participate in a few events": {
-        "Access Information": 3,
-        "Reduced Rates": 3
-      },
-      "Actively collaborate on projects": {
-        "Networking Forum": 4,
-        "Voting Privileges": 3
-      },
-      "Lead discussions or workstreams": {
-        "Networking Forum": 4,
-        "Voting Privileges": 4,
-        "Influence": 3
-      }
+      "Observe and consume resources/events": [
+        "Access Information",
+        "Stay Informed"
+      ],
+      "Participate in a few events": [
+        "Reduced Rates",
+        "Networking Forum"
+      ],
+      "Actively collaborate on projects": [
+        "Networking Forum",
+        "Multi-Sectoral Perspectives"
+      ],
+      "Lead discussions or workstreams": [
+        "Voting Privileges",
+        "Influence"
+      ],
+      "Other": [
+        "Access Information"
+      ]
     },
     "year2_goal": {
-      "Raise your profile in the sector": {
-        "Access Information": 3,
-        "Networking Forum": 4
-      },
-      "Influence circular economy policy": {
-        "Access Information": 3,
-        "Influence": 5,
-        "Voting Privileges": 4
-      },
-      "Build cross-sector partnerships": {
-        "Multi-Sectoral Perspectives": 4,
-        "Reduced Rates": 3,
-        "Networking Forum": 3
-      },
-      "Drive measurable projects in your organization": {
-        "Stay Informed": 3,
-        "Networking Forum": 4
-      }
+      "Raise your profile in the sector": [
+        "Networking Forum",
+        "Access Information"
+      ],
+      "Influence circular economy policy": [
+        "Influence",
+        "Voting Privileges"
+      ],
+      "Build cross-sector partnerships": [
+        "Networking Forum",
+        "Multi-Sectoral Perspectives"
+      ],
+      "Drive measurable projects in your organization": [
+        "Stay Informed",
+        "Access Information"
+      ],
+      "Other": [
+        "Access Information"
+      ]
+    },
+    "communication_style": {
+      "Monthly updates": [
+        "Stay Informed"
+      ],
+      "Bi-weekly topic digests": [
+        "Access Information",
+        "Stay Informed"
+      ],
+      "Real-time alerts": [
+        "Stay Informed",
+        "Influence"
+      ],
+      "Only key event notifications": [
+        "Reduced Rates",
+        "Networking Forum"
+      ]
     }
-  },
-  "tier_weight": {
-    "Bronze": 1,
-    "Silver": 2,
-    "Gold": 1
   }
 }

@@ -15,7 +15,7 @@
 
     <div class="card tree-card">
         <div class="row-between">
-            <div class="tier-pill">Tier: {{ tier }}</div>
+            <div class="tier-pill tier-{{ tier|lower }}">Tier: {{ tier }}</div>
             <div class="meter-wrap small-meter">
                 <div class="meter" style="--progress: {{ progress }}%;"><span>{{ progress }}%</span></div>
             </div>
@@ -27,28 +27,7 @@
 
         <div class="tree-layout">
             <div id="plotly-tree" class="plotly-tree" aria-label="Growth tree chart"></div>
-            <aside class="growth-visual card">
-                <h3>Membership Growth Stage</h3>
-                <div class="stage-drawing stage-{{ growth_stage }}" aria-label="Tier growth tree drawing">
-                    <div class="ground"></div>
-                    <div class="trunk"></div>
-                    <div class="branch left"></div>
-                    <div class="branch right"></div>
-                    <div class="leaf leaf-1"></div>
-                    <div class="leaf leaf-2"></div>
-                    <div class="leaf leaf-3"></div>
-                    <div class="leaf leaf-4"></div>
-                </div>
-                <p>
-                    {% if growth_stage == 'sapling' %}
-                        You are in the sapling stage. Keep building your foundation.
-                    {% elif growth_stage == 'branching' %}
-                        Your plan is branching out with stronger collaboration opportunities.
-                    {% else %}
-                        Full tree stage unlocked — lead and influence across CIC.
-                    {% endif %}
-                </p>
-            </aside>
+            
         </div>
 
         <div class="year-sections">

@@ -37,6 +37,7 @@ RECOMMENDATION_RULES = load_recommendation_rules()
 # Create a dictionary mapping service titles to their full data for quick lookup
 SERVICES_BY_TITLE = {service["title"]: service for service in SERVICES}
 TIER_ORDER = ["Bronze", "Silver", "Gold"]
+YEAR_ORDER = ["year1", "year2", "year3"]
 
 
 def default_tree():
@@ -66,40 +67,21 @@ def merge_purchased_into_tree(tree, purchased):
         tree = add_service_to_tree(tree, service_name)
     return tree
 
+def collect_recommended_services(answers, bundled_services):
+    option_service_map = RECOMMENDATION_RULES.get("option_service_map", {})
+    service_hits = {}
 
-
-def org_category_from_answers(answers):
-    org_type = answers.get("organization_type", "")
-    org_map = RECOMMENDATION_RULES.get("org_type_map", {})
-    return org_map.get(org_type, "individual")
-
-
-def compute_service_scores(answers, bundled_services):
-    scores = {}
-    tier_weight = RECOMMENDATION_RULES.get("tier_weight", {})
-
-    for service in bundled_services:
-        service_title = service.get("title")
-        tier_name = service.get("tier", "Bronze")
-        scores[service_title] = tier_weight.get(tier_name, 1)
-
-    org_category = org_category_from_answers(answers)
-    org_boosts = RECOMMENDATION_RULES.get("organization_boosts", {}).get(org_category, {})
-    for service_title, boost in org_boosts.items():
-        if service_title in scores:
-            scores[service_title] += boost
-
-    question_boosts = RECOMMENDATION_RULES.get("question_boosts", {})
-    for field, field_rules in question_boosts.items():
+    bundled_titles = {service.get("title") for service in bundled_services}
+    for field, field_map in option_service_map.items():
         answer = answers.get(field)
         if not answer:
             continue
-        service_boosts = field_rules.get(answer, {})
-        for service_title, boost in service_boosts.items():
-            if service_title in scores:
-                scores[service_title] += boost
 
-    return scores
+        for service_title in field_map.get(answer, []):
+            if service_title in bundled_titles:
+                service_hits[service_title] = service_hits.get(service_title, 0) + 1
+
+    return service_hits
 
 def accessible_tiers(current_tier):
     if current_tier not in TIER_ORDER:
@@ -109,9 +91,12 @@ def accessible_tiers(current_tier):
 
 def selected_bundle_tier():
     selected = session.get("selected_bundle")
+    calculated = calculate_tier()
+
+    if selected in TIER_ORDER and calculated in TIER_ORDER:
+        return TIER_ORDER[max(TIER_ORDER.index(selected), TIER_ORDER.index(calculated))]
     if selected in TIER_ORDER:
         return selected
-    calculated = calculate_tier()
     if calculated in TIER_ORDER:
         return calculated
     return "Bronze"
@@ -132,40 +117,34 @@ def bundle_services_for_tier(current_tier):
 def generate_growth_tree(answers):
     # Start with an empty tree
     tree = default_tree()
-    year_keys = ["year1", "year2", "year3"]
     current_tier = selected_bundle_tier()
     bundled_services = bundle_services_for_tier(current_tier)
+    service_hits = collect_recommended_services(answers, bundled_services)
+    service_lookup = {service["title"]: service for service in bundled_services}
+    tier_rank = {tier: index for index, tier in enumerate(TIER_ORDER)}
+    year_rank = {year: index for index, year in enumerate(YEAR_ORDER)}
 
-    service_scores = compute_service_scores(answers, bundled_services)
-    scored_services = []
-    # Score each service based on decision-tree rule mapping.
-    # Note: communication style (Q9) is intentionally excluded from recommendation scoring.
-    for service in bundled_services:
-        target_year = service.get("preferred_year", "year2")  # Default to year2 if missing
-        if target_year not in year_keys:
+    # Sort matched services by tier, then by number of matching quiz options.
+    sorted_matches = sorted(
+        service_hits.items(),
+        key=lambda item: (
+            tier_rank.get(service_lookup[item[0]].get("tier"), 99),
+            -item[1],
+            year_rank.get(service_lookup[item[0]].get("preferred_year", "year2"), 1),
+        ),
+    )
+
+    if not sorted_matches:
+        sorted_matches = [(service.get("title"), 0) for service in bundled_services]
+
+    for service_title, _ in sorted_matches:
+        service = service_lookup.get(service_title)
+        if not service:
+            continue
+        target_year = service.get("preferred_year", "year2")
+        if target_year not in YEAR_ORDER:
             target_year = "year2"
-        score = service_scores.get(service.get("title"), 0)
-        scored_services.append((target_year, score, service))
-
-    # Process each year seperately
-    for year in year_keys:
-        # Filter services for this year
-        yearly = [item for item in scored_services if item[0] == year]
-        # Sort by score (descending) and price (higher first)
-        yearly.sort(key=lambda item: (item[1], -item[2].get("price", 0)), reverse=True)
-
-        # Select top services with positive scores (max 3)
-        chosen = [service["title"] for _, score, service in yearly if score > 0][:3]
-        # Ensure at least 2 services per year (fallback if needed)
-        if len(chosen) < 2:
-            fallback = [service["title"] for _, _, service in yearly if service["title"] not in chosen]
-            chosen.extend(fallback[: 2 - len(chosen)])
-
-        tree[year].extend(chosen)
-
-    # Remove duplicates while preserving order
-    for year in tree:
-        tree[year] = list(dict.fromkeys(tree[year]))
+        tree[target_year].append(service_title)
 
     # Add purchased services into the tree
     purchased = session.get("purchased", [])
@@ -207,14 +186,6 @@ def tier_progress_percent():
 
 
 
-
-def tier_growth_stage(tier_name):
-    return {
-        "New Member": "sapling",
-        "Bronze": "sapling",
-        "Silver": "branching",
-        "Gold": "full_tree",
-    }[tier_name]
 
 def current_discount_percent():
     # Return discount based on tier
@@ -305,7 +276,6 @@ def tree():
         "tree.html",
         tree=tree_data,
         tier=current_tier,
-        growth_stage=tier_growth_stage(current_tier),
         progress=tier_progress_percent(),
         services_map=SERVICES_BY_TITLE,
         purchased=set(purchased_names),
@@ -347,6 +317,10 @@ def buy(service_name):
     session["tier"] = new_tier
     if old_tier and old_tier != new_tier:
         session["celebration"] = f"Great work! You reached {new_tier} tier."
+
+    # Rebuild recommendations when tier unlocks new service levels.
+    if "quiz_answers" in session:
+        session["growth_tree"] = generate_growth_tree(session["quiz_answers"])
 
     # Redirect back to previous page or tree
     return redirect(request.args.get("next") or url_for("tree"))
