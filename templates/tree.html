@@ -27,25 +27,7 @@
 
         <div class="tree-layout">
             <div id="plotly-tree" class="plotly-tree" aria-label="Growth tree chart"></div>
-        </div>
-
-        <div class="year-sections">
-            {% for year, items in [("Year 1", tree.year1), ("Year 2", tree.year2), ("Year 3", tree.year3)] %}
-            <article class="year-section">
-                <h3>{{ year }}</h3>
-                <ul>
-                    {% if items %}
-                        {% for subservice in items %}
-                        <li class="service-item">
-                            <p>{{ subservice }}</p>
-                        </li>
-                        {% endfor %}
-                    {% else %}
-                        <li class="muted">No recommendations yet.</li>
-                    {% endif %}
-                </ul>
-            </article>
-            {% endfor %}
+            <aside id="node-hover-card" class="node-hover-card hidden" aria-live="polite"></aside>
         </div>
     </div>
 
@@ -73,12 +55,18 @@
   yearNodes.forEach((yearNode) => {
     const items = tree[yearNode.key] || [];
     const count = Math.max(items.length, 1);
-    items.forEach((name, idx) => {
+    items.forEach((entry, idx) => {
       const spread = count === 1 ? 0 : ((idx / (count - 1)) - 0.5) * 1.4;
       servicePoints.push({
-        name,
         x: yearNode.x + spread,
-        y: yearNode.y - 1.1
+        y: yearNode.y - 1.1,
+        subservice: entry.subservice,
+        service: entry.service,
+        group: entry.group,
+        required_tier: entry.required_tier,
+        is_locked: entry.is_locked,
+        is_added: entry.is_added,
+        use_url: entry.use_url,
       });
       linesX.push(yearNode.x, yearNode.x + spread, null);
       linesY.push(yearNode.y, yearNode.y - 1.1, null);
@@ -109,17 +97,16 @@
     },
     {
       type: 'scatter',
-      mode: 'markers+text',
+      mode: 'markers',
       x: servicePoints.map(p => p.x),
       y: servicePoints.map(p => p.y),
-      text: servicePoints.map(p => p.name),
-      textposition: 'bottom center',
       marker: {
-        size: 18,
-        color: '#ffd400',
-        line: { color: '#c37d00', width: 2 }
+        size: servicePoints.map(p => p.is_added ? 24 : 16),
+        color: servicePoints.map(p => p.is_locked ? '#b9c9c4' : (p.is_added ? '#ffd400' : '#7fa89d')),
+        line: { color: '#0f3f35', width: 1.5 }
       },
-      hovertemplate: '%{text}<extra></extra>',
+      customdata: servicePoints,
+      hoverinfo: 'skip',
       showlegend: false
     }
   ];
@@ -131,6 +118,37 @@
     xaxis: { visible: false },
     yaxis: { visible: false }
   }, {displayModeBar: false, responsive: true});
+
+  const plot = document.getElementById('plotly-tree');
+  const card = document.getElementById('node-hover-card');
+
+  function showCard(point) {
+    const data = point.customdata;
+    const actionButton = data.is_locked
+      ? `<p class="muted">Unlocks at ${data.required_tier} tier.</p><button class="btn btn-disabled" aria-disabled="true">Use service</button>`
+      : `<a class="btn" href="${data.use_url}">${data.is_added ? 'Use service' : 'Add service'}</a>`;
+
+    card.innerHTML = `
+      <h4>${data.subservice}</h4>
+      <p><strong>Service:</strong> ${data.service}</p>
+      <p><strong>Group:</strong> ${data.group}</p>
+      ${actionButton}
+    `;
+    card.classList.remove('hidden');
+  }
+
+  plot.on('plotly_hover', (eventData) => {
+    const point = eventData.points && eventData.points[0];
+    if (!point || point.curveNumber !== 2) {
+      card.classList.add('hidden');
+      return;
+    }
+    showCard(point);
+  });
+
+  plot.on('plotly_unhover', () => {
+    card.classList.add('hidden');
+  });
 })();
 </script>
 {% endblock %}

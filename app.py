@@ -53,6 +53,10 @@ BUNDLE_SERVICE_DETAILS = {
     for tier in TIER_BUNDLES.get("tiers", [])
     for service in tier.get("services", [])
 }
+TIER_SUMMARY_MAP = {
+    tier.get("name"): tier.get("summary", "General Services")
+    for tier in TIER_BUNDLES.get("tiers", [])
+}
 
 
 def default_tree():
@@ -209,7 +213,7 @@ def generate_growth_tree(answers):
 
 
 
-def subservices_for_tree(tree, recommended_subservices):
+def subservices_for_tree(tree, recommended_subservices, current_tier, purchased_services):
     tree_subservices = default_tree()
 
     for year in YEAR_ORDER:
@@ -221,10 +225,31 @@ def subservices_for_tree(tree, recommended_subservices):
             else:
                 candidates = BUNDLE_SERVICE_DETAILS.get(service_name, {}).get("subservices", [])
 
+            required_tier = SERVICE_TIER_MAP.get(service_name, "Bronze")
+            service_group = TIER_SUMMARY_MAP.get(required_tier, "General Services")
+            unlocked = service_is_unlocked(service_name, current_tier)
+            added = service_name in purchased_services
+
             for subservice in candidates:
-                if subservice and subservice not in seen:
-                    tree_subservices[year].append(subservice)
-                    seen.add(subservice)
+                if not subservice:
+                    continue
+
+                dedupe_key = f"{service_name}::{subservice}"
+                if dedupe_key in seen:
+                    continue
+
+                tree_subservices[year].append(
+                    {
+                        "service": service_name,
+                        "subservice": subservice,
+                        "group": service_group,
+                        "required_tier": required_tier,
+                        "is_locked": not unlocked and not added,
+                        "is_added": added,
+                        "use_url": url_for("buy", service_name=service_name),
+                    }
+                )
+                seen.add(dedupe_key)
 
     return tree_subservices
 
@@ -360,7 +385,12 @@ def tree():
         if service_name not in purchased_names and not service_is_unlocked(service_name, current_tier)
     }
     recommended_subservices = session.get("recommended_subservices", {})
-    tree_subservices = subservices_for_tree(tree_data, recommended_subservices)
+    tree_subservices = subservices_for_tree(
+        tree_data,
+        recommended_subservices,
+        current_tier,
+        set(purchased_names),
+    )
 
     return render_template(
         "tree.html",
