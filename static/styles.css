@@ -81,6 +81,17 @@ body {
   background: #00b4e2;
 }
 
+.btn-disabled {
+  background: #b9c9c4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.muted {
+  color: #5f736d;
+  font-size: 0.92rem;
+}
+
 /* Button grouping */
 .actions {
   display: flex;
@@ -315,7 +326,40 @@ th, td {
     grid-template-columns: 1fr;
   }
 
+  .tree-layout {
+    grid-template-columns: 1fr;
+  }
+
   .plotly-tree {
     height: 360px;
   }
+}
+
+
+.tree-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.node-hover-card {
+  background: #f8fbfa;
+  border: 1px solid #deece8;
+  border-radius: 10px;
+  padding: 12px;
+  min-height: 140px;
+}
+
+.node-hover-card.hidden {
+  visibility: hidden;
+}
+
+.node-hover-card h4 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.node-hover-card p {
+  margin: 0 0 8px;
 }
