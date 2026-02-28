@@ -25,6 +25,8 @@
         <div class="celebration">🎉 {{ celebration }}</div>
         {% endif %}
 
+        <p class="muted">{% if tier == "Bronze" %}You are in Bronze: focus on Information Services first while previewing higher-tier opportunities.{% elif tier == "Silver" %}You are in Silver: start with Information + Relationship services, and preview Influential services for your next step.{% else %}You are in Gold: you can use all service groups across the tree.{% endif %}</p>
+
         <div class="tree-layout">
             <div id="plotly-tree" class="plotly-tree" aria-label="Growth tree chart"></div>
             <aside id="node-hover-card" class="node-hover-card hidden" aria-live="polite"></aside>
@@ -128,15 +130,15 @@
       card.classList.add('hidden');
       return;
     }
-    const actionButton = data.is_locked
-      ? `<p class="muted">Unlocks at ${data.required_tier} tier.</p><button class="btn btn-disabled" aria-disabled="true">Use service</button>`
-      : `<a class="btn" href="${data.use_url}">${data.is_added ? 'Use service' : 'Add service'}</a>`;
+    const lockNote = data.is_locked
+      ? `<p class="muted">Unlocks at ${data.required_tier} tier.</p>`
+      : `<p class="muted">Available in your current tier.</p>`;
 
     card.innerHTML = `
       <h4>${data.subservice}</h4>
       <p><strong>Service:</strong> ${data.service}</p>
       <p><strong>Group:</strong> ${data.group}</p>
-      ${actionButton}
+      ${lockNote}
     `;
     card.classList.remove('hidden');
   }

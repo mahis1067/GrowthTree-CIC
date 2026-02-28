@@ -13,9 +13,9 @@
             {% else %}
                 {% if service.title in locked_services %}
                     <p class="muted">Unlocks at {{ service_tier_map.get(service.title, 'higher') }} tier</p>
-                    <a class="btn btn-disabled" aria-disabled="true" href="#">Add service</a>
+                    <a class="btn btn-disabled" aria-disabled="true" href="#">Add service bundle</a>
                 {% else %}
-                    <a class="btn" href="{{ url_for('buy', service_name=service.title, next=url_for('services')) }}">Add service</a>
+                    <a class="btn" href="{{ url_for('buy', service_name=service.title, next=url_for('services')) }}">Add service bundle</a>
                 {% endif %}
             {% endif %}
         </article>
