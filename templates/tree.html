@@ -46,6 +46,14 @@
                                 {% endif %}
                             </div>
                             <p>{{ detail.description or 'Recommended service for your roadmap.' }}</p>
+                            {% set matched_items = recommended_subservices.get(service_name, []) %}
+                            {% if matched_items %}
+                            <ul>
+                                {% for recommendation in matched_items %}
+                                <li class="muted">{{ recommendation }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
                             {% if service_name not in purchased %}
                                 {% if service_name in locked_services %}
                                 <span class="muted">Unlocks at {{ service_tier_map.get(service_name, 'higher') }} tier</span>

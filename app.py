@@ -88,6 +88,30 @@ def collect_recommended_services(answers, bundled_services):
 
     return service_hits
 
+
+
+def collect_recommended_subservices(answers, bundled_services):
+    option_subservice_map = RECOMMENDATION_RULES.get("option_subservice_map", {})
+    bundled_titles = {service.get("title") for service in bundled_services}
+    collected = {}
+
+    for field, field_map in option_subservice_map.items():
+        answer = answers.get(field)
+        if not answer:
+            continue
+
+        for item in field_map.get(answer, []):
+            service_title = item.get("service")
+            subservice = item.get("subservice")
+            if not service_title or not subservice or service_title not in bundled_titles:
+                continue
+
+            entries = collected.setdefault(service_title, [])
+            if subservice not in entries:
+                entries.append(subservice)
+
+    return collected
+
 def accessible_tiers(current_tier):
     if current_tier not in TIER_ORDER:
         return ["Bronze"]
@@ -262,6 +286,10 @@ def quiz():
 
         # Generate growth tree based on answers
         session["growth_tree"] = generate_growth_tree(answers)
+        session["recommended_subservices"] = collect_recommended_subservices(
+            answers,
+            all_bundle_services(),
+        )
 
         # Update tier and check if tier advanced
         new_tier = calculate_tier()
@@ -312,6 +340,7 @@ def tree():
         celebration=celebration,
         locked_services=locked_services,
         service_tier_map=SERVICE_TIER_MAP,
+        recommended_subservices=session.get("recommended_subservices", {}),
     )
 
 
@@ -371,6 +400,10 @@ def buy(service_name):
     # Rebuild recommendations when tier unlocks new service levels.
     if "quiz_answers" in session:
         session["growth_tree"] = generate_growth_tree(session["quiz_answers"])
+        session["recommended_subservices"] = collect_recommended_subservices(
+            session["quiz_answers"],
+            all_bundle_services(),
+        )
 
     # Redirect back to previous page or tree
     return redirect(request.args.get("next") or url_for("tree"))
@@ -390,6 +423,10 @@ def select_bundle(tier_name):
 
     if "quiz_answers" in session:
         session["growth_tree"] = generate_growth_tree(session["quiz_answers"])
+        session["recommended_subservices"] = collect_recommended_subservices(
+            session["quiz_answers"],
+            all_bundle_services(),
+        )
 
     return redirect(url_for("quiz"))
 

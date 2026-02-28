@@ -192,5 +192,272 @@
         "Networking Forum"
       ]
     }
+  },
+  "option_subservice_map": {
+    "primary_reason": {
+      "Access trusted information & research": [
+        {
+          "service": "Access Information",
+          "subservice": "Access verified information about waste reduction."
+        },
+        {
+          "service": "Access Information",
+          "subservice": "Access verified information about resource recovery issues."
+        },
+        {
+          "service": "Access Information",
+          "subservice": "Access CIC research and publications."
+        }
+      ],
+      "Connect with policymakers and peers": [
+        {
+          "service": "Networking Forum",
+          "subservice": "Connect with governments of all levels."
+        },
+        {
+          "service": "Networking Forum",
+          "subservice": "Connect with environmental non-profits."
+        }
+      ],
+      "Attend events/workshops at reduced cost": [
+        {
+          "service": "Reduced Rates",
+          "subservice": "Reduced rates for workshops."
+        },
+        {
+          "service": "Reduced Rates",
+          "subservice": "Reduced rates for CIC or partner special events."
+        }
+      ],
+      "Influence policy and strategy": [
+        {
+          "service": "Influence",
+          "subservice": "Influence policy inputs."
+        },
+        {
+          "service": "Voting Privileges",
+          "subservice": "Vote at the annual general meeting."
+        },
+        {
+          "service": "Voting Privileges",
+          "subservice": "Run for a seat on the Board of Directors."
+        }
+      ],
+      "Participate in committees or governance": [
+        {
+          "service": "Voting Privileges",
+          "subservice": "Participate in the Program Development Committee."
+        },
+        {
+          "service": "Voting Privileges",
+          "subservice": "Participate in the Event Committee."
+        }
+      ]
+    },
+    "journey_stage": {
+      "Just getting started": [
+        {
+          "service": "Stay Informed",
+          "subservice": "Email list about circular news and events from around the world."
+        },
+        {
+          "service": "Reduced Rates",
+          "subservice": "Reduced rates for seminars."
+        },
+        {
+          "service": "Access Information",
+          "subservice": "Access verified information about circular economy."
+        }
+      ],
+      "Implementing projects": [
+        {
+          "service": "Networking Forum",
+          "subservice": "Connect with environmental consultants and businesses."
+        },
+        {
+          "service": "Reduced Rates",
+          "subservice": "Reduced rates for workshops."
+        }
+      ],
+      "Leading initiatives": [
+        {
+          "service": "Multi-Sectoral Perspectives",
+          "subservice": "Neutral-setting discussions about priority environmental issues."
+        },
+        {
+          "service": "Voting Privileges",
+          "subservice": "Participate in the Program Development Committee."
+        }
+      ],
+      "Want to shape sector strategy": [
+        {
+          "service": "Influence",
+          "subservice": "Influence how CIC adapts its policies to changing conditions and government perspectives."
+        },
+        {
+          "service": "Voting Privileges",
+          "subservice": "Run for a seat on the Board of Directors."
+        }
+      ]
+    },
+    "governance_interest": {
+      "Yes : policy input/strategy": [
+        {
+          "service": "Influence",
+          "subservice": "Influence policy inputs."
+        },
+        {
+          "service": "Voting Privileges",
+          "subservice": "Run for a seat on the Board of Directors."
+        }
+      ],
+      "Yes: committee work": [
+        {
+          "service": "Voting Privileges",
+          "subservice": "Participate in the Program Development Committee."
+        },
+        {
+          "service": "Voting Privileges",
+          "subservice": "Participate in the Event Committee."
+        }
+      ],
+      "Maybe later": [
+        {
+          "service": "Voting Privileges",
+          "subservice": "Vote at the annual general meeting."
+        },
+        {
+          "service": "Stay Informed",
+          "subservice": "Circular Innovation Council announcements and updates."
+        }
+      ],
+      "Not right now": []
+    },
+    "event_type": {
+      "High-level policy and advocacy discussions": [
+        {
+          "service": "Multi-Sectoral Perspectives",
+          "subservice": "Neutral-setting discussions about priority environmental issues."
+        },
+        {
+          "service": "Networking Forum",
+          "subservice": "Connect with governments of all levels."
+        }
+      ],
+      "Practical training or workshops": [
+        {
+          "service": "Access Information",
+          "subservice": "Receive notifications for workshops, forums, and events."
+        },
+        {
+          "service": "Reduced Rates",
+          "subservice": "Reduced rates for workshops."
+        }
+      ],
+      "Multi-Sector Collaboration Events": [
+        {
+          "service": "Multi-Sectoral Perspectives",
+          "subservice": "Perspectives from governments, industry, SMEs, individuals, non-profits, and more."
+        },
+        {
+          "service": "Networking Forum",
+          "subservice": "Connect with environmental consultants and businesses."
+        }
+      ],
+      "Local community circular economy activities": [
+        {
+          "service": "Stay Informed",
+          "subservice": "Email list about partner events."
+        },
+        {
+          "service": "Reduced Rates",
+          "subservice": "Reduced rates for forums."
+        }
+      ]
+    },
+    "involvement_level": {
+      "Observe and consume resources/events": [
+        {
+          "service": "Access Information",
+          "subservice": "Access CIC research and publications."
+        },
+        {
+          "service": "Reduced Rates",
+          "subservice": "Reduced rates for CIC or partner special events."
+        }
+      ],
+      "Participate in a few events": [
+        {
+          "service": "Access Information",
+          "subservice": "Receive notifications for workshops, forums, and events."
+        },
+        {
+          "service": "Reduced Rates",
+          "subservice": "Reduced rates for seminars."
+        }
+      ],
+      "Actively collaborate on projects": [
+        {
+          "service": "Networking Forum",
+          "subservice": "Connect with environmental non-profits."
+        },
+        {
+          "service": "Voting Privileges",
+          "subservice": "Participate in the Program Development Committee."
+        }
+      ],
+      "Lead discussions or workstreams": [
+        {
+          "service": "Networking Forum",
+          "subservice": "Connect with governments of all levels."
+        },
+        {
+          "service": "Voting Privileges",
+          "subservice": "Run for a seat on the Board of Directors."
+        }
+      ]
+    },
+    "year2_goal": {
+      "Raise your profile in the sector": [
+        {
+          "service": "Access Information",
+          "subservice": "Access verified information about resource recovery issues."
+        },
+        {
+          "service": "Networking Forum",
+          "subservice": "Connect with environmental consultants and businesses."
+        }
+      ],
+      "Influence circular economy policy": [
+        {
+          "service": "Access Information",
+          "subservice": "Access verified information about circular economy."
+        },
+        {
+          "service": "Influence",
+          "subservice": "Influence how CIC adapts its policies to changing conditions and government perspectives."
+        }
+      ],
+      "Build cross-sector partnerships": [
+        {
+          "service": "Multi-Sectoral Perspectives",
+          "subservice": "Neutral-setting discussions about priority environmental issues."
+        },
+        {
+          "service": "Reduced Rates",
+          "subservice": "Reduced rates for CIC or partner special events."
+        }
+      ],
+      "Drive measurable projects in your organization": [
+        {
+          "service": "Stay Informed",
+          "subservice": "Email list about policy and industry updates."
+        },
+        {
+          "service": "Networking Forum",
+          "subservice": "Connect with environmental non-profits."
+        }
+      ]
+    }
   }
 }
