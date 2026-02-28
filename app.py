@@ -421,61 +421,20 @@ def tree():
 
 @app.route("/services")
 def services():
-    # Show all services and mark purchased ones
-    purchased = set(session.get("purchased", []))
+    # Show bundle services as a reference catalog (visual guidance only).
     current_tier = selected_bundle_tier()
-    locked_services = {
-        service.get("title")
-        for service in SERVICES
-        if not service_is_unlocked(service.get("title"), current_tier)
-    }
     return render_template(
         "services.html",
-        services=SERVICES,
-        purchased=purchased,
+        tier_bundles=TIER_BUNDLES.get("tiers", []),
         tier=current_tier,
-        service_tier_map=SERVICE_TIER_MAP,
-        locked_services=locked_services,
     )
 
 
 @app.route("/buy/<service_name>")
 def buy(service_name):
-    # If service doesn't exist, redirect to services page
-    if service_name not in SERVICES_BY_TITLE:
-        return redirect(url_for("services"))
-
-    current_tier = selected_bundle_tier()
-    if not service_is_unlocked(service_name, current_tier):
-        required_tier = SERVICE_TIER_MAP.get(service_name)
-        session["celebration"] = (
-            f"{service_name} unlocks at {required_tier} tier. Keep growing to add it."
-        )
-        return redirect(request.args.get("next") or url_for("tree"))
-
-    # Add service to purchased list if not already there
-    purchased = session.get("purchased", [])
-    if service_name not in purchased:
-        purchased.append(service_name)
-    session["purchased"] = purchased
-
-    # Add purchased service to growth tree if missing
-    tree_data = session.get("growth_tree", default_tree())
-    if service_name not in tree_data["year1"] + tree_data["year2"] + tree_data["year3"]:
-        tree_data = add_service_to_tree(tree_data, service_name)
-    session["growth_tree"] = merge_purchased_into_tree(tree_data, purchased)
-
-    # Update tier and check for upgrade
-    old_tier = session.get("tier")
-    new_tier = calculate_tier()
-    session["tier"] = new_tier
-    if old_tier and old_tier != new_tier:
-        session["celebration"] = f"Great work! You reached {new_tier} tier."
-
-    # Keep recommendation plan stable after adding services.
-
-    # Redirect back to previous page or tree
-    return redirect(request.args.get("next") or url_for("tree"))
+    # Service catalog is view-only; do not allow manual additions to the tree.
+    session["celebration"] = "Service bundles are visual only in the tree. Select a tier bundle to shape your roadmap."
+    return redirect(request.args.get("next") or url_for("services"))
 
 
 @app.route("/buy-bundle/<tier_name>")
