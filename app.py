@@ -290,10 +290,8 @@ def tree():
 
     # Get and remove celebratory message
     celebration = session.pop("celebration", None)
-    # Get purchased items and calculate total spent
+    # Get added services
     purchased_names = session.get("purchased", [])
-    purchased_items = [SERVICES_BY_TITLE[name] for name in purchased_names if name in SERVICES_BY_TITLE]
-    total_spent = sum(item["price"] for item in purchased_items)
 
     # Render tree page with all relevant data
     current_tier = selected_bundle_tier()
@@ -310,8 +308,7 @@ def tree():
         services_map=SERVICES_BY_TITLE,
         purchased=set(purchased_names),
         purchased_count=len(purchased_names),
-        total_spent=total_spent,
-        discount=current_discount_percent(),
+        unlocked_count=len(SERVICE_TIER_MAP) - len(locked_services),
         celebration=celebration,
         locked_services=locked_services,
         service_tier_map=SERVICE_TIER_MAP,
@@ -348,7 +345,7 @@ def buy(service_name):
     if not service_is_unlocked(service_name, current_tier):
         required_tier = SERVICE_TIER_MAP.get(service_name)
         session["celebration"] = (
-            f"{service_name} unlocks at {required_tier} tier. Keep growing to purchase it."
+            f"{service_name} unlocks at {required_tier} tier. Keep growing to add it."
         )
         return redirect(request.args.get("next") or url_for("tree"))
 
@@ -416,10 +413,9 @@ def tier():
 
 @app.route("/invoice")
 def invoice():
-    # Generate invoice with purchased services and total cost
+    # Show added services (no price tracking)
     items = purchased_details()
-    total = sum(item["price"] for item in items)
-    return render_template("invoice.html", items=items, total=total)
+    return render_template("invoice.html", items=items)
 
 
 if __name__ == "__main__":
