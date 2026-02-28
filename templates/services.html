@@ -12,7 +12,12 @@
             {% if service.title in purchased %}
                 <span class="owned">Purchased</span>
             {% else %}
-                <a class="btn" href="{{ url_for('buy', service_name=service.title, next=url_for('services')) }}">Add to Tree</a>
+                {% if service.title in locked_services %}
+                    <p class="muted">Unlocks at {{ service_tier_map.get(service.title, 'higher') }} tier</p>
+                    <a class="btn btn-disabled" aria-disabled="true" href="#">Add to Tree</a>
+                {% else %}
+                    <a class="btn" href="{{ url_for('buy', service_name=service.title, next=url_for('services')) }}">Add to Tree</a>
+                {% endif %}
             {% endif %}
         </article>
         {% endfor %}
