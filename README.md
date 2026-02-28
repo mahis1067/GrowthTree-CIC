@@ -1,6 +1,6 @@
 # GrowthTree-CIC
 
-## Link to Website: https://mahi1067.pythonanywhere.com/
+### Link to Website: https://mahi1067.pythonanywhere.com/
 
 ## Project Overview
 The Circular Innovation Council is an organization funded solely by membership. Small businesses, municipalities, and large organizations can apply for CIC services to provide financial stability, research, policy updates, events, working collaboration, and visibility within the circular economy network. Membership is annual and fixed. 
