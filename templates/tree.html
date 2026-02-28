@@ -106,7 +106,7 @@
         line: { color: '#0f3f35', width: 1.5 }
       },
       customdata: servicePoints,
-      hoverinfo: 'skip',
+      hovertemplate: 'Subservice node<extra></extra>',
       showlegend: false
     }
   ];
@@ -123,7 +123,11 @@
   const card = document.getElementById('node-hover-card');
 
   function showCard(point) {
-    const data = point.customdata;
+    const data = point.customdata || (point.data.customdata && point.data.customdata[point.pointIndex]);
+    if (!data) {
+      card.classList.add('hidden');
+      return;
+    }
     const actionButton = data.is_locked
       ? `<p class="muted">Unlocks at ${data.required_tier} tier.</p><button class="btn btn-disabled" aria-disabled="true">Use service</button>`
       : `<a class="btn" href="${data.use_url}">${data.is_added ? 'Use service' : 'Add service'}</a>`;
@@ -137,15 +141,17 @@
     card.classList.remove('hidden');
   }
 
-  plot.on('plotly_hover', (eventData) => {
+  function handlePointEvent(eventData) {
     const point = eventData.points && eventData.points[0];
     if (!point || point.curveNumber !== 2) {
       card.classList.add('hidden');
       return;
     }
     showCard(point);
-  });
+  }
 
+  plot.on('plotly_hover', handlePointEvent);
+  plot.on('plotly_click', handlePointEvent);
   plot.on('plotly_unhover', () => {
     card.classList.add('hidden');
   });
