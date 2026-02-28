@@ -167,6 +167,19 @@ def all_bundle_services():
     return bundled
 
 
+def bundle_service_titles_for_tier(current_tier):
+    unlocked = set(accessible_tiers(current_tier))
+    titles = []
+    for tier in TIER_BUNDLES.get("tiers", []):
+        if tier.get("name") not in unlocked:
+            continue
+        for service in tier.get("services", []):
+            title = service.get("title")
+            if title and title not in titles:
+                titles.append(title)
+    return titles
+
+
 def service_is_unlocked(service_name, current_tier):
     required_tier = SERVICE_TIER_MAP.get(service_name)
     if not required_tier:
@@ -254,16 +267,14 @@ def subservices_for_tree(tree, recommended_subservices, current_tier, purchased_
     return tree_subservices
 
 def calculate_tier():
-    # Get number of years and purchased services from session
+    # Tier progression is based on time only.
     years_with_cic = int(session.get("membership_years", 0))
-    purchased_count = len(session.get("purchased", []))
 
-    #Determine tier based on years or purchases
-    if years_with_cic >= 3 or purchased_count >= 6:
+    if years_with_cic >= 3:
         return "Gold"
-    if years_with_cic >= 2 or purchased_count >= 3:
+    if years_with_cic >= 2:
         return "Silver"
-    if years_with_cic >= 1 or purchased_count >= 1:
+    if years_with_cic >= 1:
         return "Bronze"
     return "New Member"
 
@@ -461,13 +472,7 @@ def buy(service_name):
     if old_tier and old_tier != new_tier:
         session["celebration"] = f"Great work! You reached {new_tier} tier."
 
-    # Rebuild recommendations when tier unlocks new service levels.
-    if "quiz_answers" in session:
-        session["growth_tree"] = generate_growth_tree(session["quiz_answers"])
-        session["recommended_subservices"] = collect_recommended_subservices(
-            session["quiz_answers"],
-            all_bundle_services(),
-        )
+    # Keep recommendation plan stable after adding services.
 
     # Redirect back to previous page or tree
     return redirect(request.args.get("next") or url_for("tree"))
@@ -480,20 +485,23 @@ def buy_bundle(tier_name):
         return redirect(url_for("tier"))
 
     session["selected_bundle"] = tier_name
-    session["tier"] = tier_name
     bundle_price = BUNDLE_PRICE_MAP.get(tier_name, 0)
     session["bundle_purchase"] = {"name": tier_name, "price": bundle_price}
     session["celebration"] = f"{tier_name} bundle added for ${bundle_price}."
 
     tier_to_years = {"Bronze": "1", "Silver": "2", "Gold": "3"}
     session["membership_years"] = tier_to_years.get(tier_name, "0")
+    session["tier"] = calculate_tier()
 
-    if "quiz_answers" in session:
-        session["growth_tree"] = generate_growth_tree(session["quiz_answers"])
-        session["recommended_subservices"] = collect_recommended_subservices(
-            session["quiz_answers"],
-            all_bundle_services(),
-        )
+    purchased = session.get("purchased", [])
+    for service_name in bundle_service_titles_for_tier(tier_name):
+        if service_name not in purchased:
+            purchased.append(service_name)
+    session["purchased"] = purchased
+
+    # Keep recommendation plan stable when users add more bundles.
+    if "growth_tree" in session:
+        session["growth_tree"] = merge_purchased_into_tree(session["growth_tree"], purchased)
 
     return redirect(url_for("quiz"))
 
