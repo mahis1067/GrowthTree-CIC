@@ -27,7 +27,6 @@
 
         <div class="tree-layout">
             <div id="plotly-tree" class="plotly-tree" aria-label="Growth tree chart"></div>
-
         </div>
 
         <div class="year-sections">
@@ -36,24 +35,9 @@
                 <h3>{{ year }}</h3>
                 <ul>
                     {% if items %}
-                        {% for service_name in items %}
-                        {% set detail = services_map.get(service_name, {}) %}
-                        <li class="service-item {% if service_name in purchased %}service-item-purchased{% endif %}">
-                            <div class="service-item-head">
-                                <strong>{{ service_name }}</strong>
-                                {% if service_name in purchased %}
-                                <span class="owned">Added</span>
-                                {% endif %}
-                            </div>
-                            <p>{{ detail.description or 'Recommended service for your roadmap.' }}</p>
-                            {% if service_name not in purchased %}
-                                {% if service_name in locked_services %}
-                                <span class="muted">Unlocks at {{ service_tier_map.get(service_name, 'higher') }} tier</span>
-                                <a class="btn btn-disabled" aria-disabled="true" href="#">Add service</a>
-                                {% else %}
-                                <a class="btn" href="{{ url_for('buy', service_name=service_name) }}">Add service</a>
-                                {% endif %}
-                            {% endif %}
+                        {% for subservice in items %}
+                        <li class="service-item">
+                            <p>{{ subservice }}</p>
                         </li>
                         {% endfor %}
                     {% else %}
@@ -75,7 +59,6 @@
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <script>
 (function () {
-  const purchased = {{ purchased|list|tojson }};
   const tree = {{ tree|tojson }};
   const yearNodes = [
     { key: 'year1', x: 0, y: 3, label: 'Year 1' },
@@ -94,10 +77,8 @@
       const spread = count === 1 ? 0 : ((idx / (count - 1)) - 0.5) * 1.4;
       servicePoints.push({
         name,
-        year: yearNode.label,
         x: yearNode.x + spread,
-        y: yearNode.y - 1.1,
-        purchased: purchased.includes(name)
+        y: yearNode.y - 1.1
       });
       linesX.push(yearNode.x, yearNode.x + spread, null);
       linesY.push(yearNode.y, yearNode.y - 1.1, null);
@@ -134,12 +115,9 @@
       text: servicePoints.map(p => p.name),
       textposition: 'bottom center',
       marker: {
-        size: servicePoints.map(p => p.purchased ? 24 : 14),
-        color: servicePoints.map(p => p.purchased ? '#ffd400' : '#7fa89d'),
-        line: {
-          color: servicePoints.map(p => p.purchased ? '#c37d00' : '#0f3f35'),
-          width: servicePoints.map(p => p.purchased ? 3 : 1)
-        }
+        size: 18,
+        color: '#ffd400',
+        line: { color: '#c37d00', width: 2 }
       },
       hovertemplate: '%{text}<extra></extra>',
       showlegend: false
