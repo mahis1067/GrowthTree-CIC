@@ -48,7 +48,12 @@
                             <p>{{ detail.description or 'Recommended service for your roadmap.' }}</p>
                             {% if detail.price %}<p><strong>${{ detail.price }}</strong></p>{% endif %}
                             {% if service_name not in purchased %}
-                            <a class="btn" href="{{ url_for('buy', service_name=service_name) }}">Buy service</a>
+                                {% if service_name in locked_services %}
+                                <span class="muted">Unlocks at {{ service_tier_map.get(service_name, 'higher') }} tier</span>
+                                <a class="btn btn-disabled" aria-disabled="true" href="#">Buy service</a>
+                                {% else %}
+                                <a class="btn" href="{{ url_for('buy', service_name=service_name) }}">Buy service</a>
+                                {% endif %}
                             {% endif %}
                         </li>
                         {% endfor %}

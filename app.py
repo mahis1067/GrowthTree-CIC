@@ -38,6 +38,11 @@ RECOMMENDATION_RULES = load_recommendation_rules()
 SERVICES_BY_TITLE = {service["title"]: service for service in SERVICES}
 TIER_ORDER = ["Bronze", "Silver", "Gold"]
 YEAR_ORDER = ["year1", "year2", "year3"]
+SERVICE_TIER_MAP = {
+    service.get("title"): tier.get("name")
+    for tier in TIER_BUNDLES.get("tiers", [])
+    for service in tier.get("services", [])
+}
 
 
 def default_tree():
@@ -114,11 +119,28 @@ def bundle_services_for_tier(current_tier):
     return bundled
 
 
+def all_bundle_services():
+    bundled = []
+    for tier in TIER_BUNDLES.get("tiers", []):
+        for service in tier.get("services", []):
+            enriched = dict(service)
+            enriched["tier"] = tier.get("name")
+            bundled.append(enriched)
+    return bundled
+
+
+def service_is_unlocked(service_name, current_tier):
+    required_tier = SERVICE_TIER_MAP.get(service_name)
+    if not required_tier:
+        return True
+    return required_tier in accessible_tiers(current_tier)
+
+
 def generate_growth_tree(answers):
     # Start with an empty tree
     tree = default_tree()
     current_tier = selected_bundle_tier()
-    bundled_services = bundle_services_for_tier(current_tier)
+    bundled_services = all_bundle_services()
     service_hits = collect_recommended_services(answers, bundled_services)
     service_lookup = {service["title"]: service for service in bundled_services}
     tier_rank = {tier: index for index, tier in enumerate(TIER_ORDER)}
@@ -272,6 +294,11 @@ def tree():
 
     # Render tree page with all relevant data
     current_tier = selected_bundle_tier()
+    locked_services = {
+        service_name
+        for service_name in tree_data["year1"] + tree_data["year2"] + tree_data["year3"]
+        if service_name not in purchased_names and not service_is_unlocked(service_name, current_tier)
+    }
     return render_template(
         "tree.html",
         tree=tree_data,
@@ -283,6 +310,8 @@ def tree():
         total_spent=total_spent,
         discount=current_discount_percent(),
         celebration=celebration,
+        locked_services=locked_services,
+        service_tier_map=SERVICE_TIER_MAP,
     )
 
 
@@ -290,7 +319,20 @@ def tree():
 def services():
     # Show all services and mark purchased ones
     purchased = set(session.get("purchased", []))
-    return render_template("services.html", services=SERVICES, purchased=purchased)
+    current_tier = selected_bundle_tier()
+    locked_services = {
+        service.get("title")
+        for service in SERVICES
+        if not service_is_unlocked(service.get("title"), current_tier)
+    }
+    return render_template(
+        "services.html",
+        services=SERVICES,
+        purchased=purchased,
+        tier=current_tier,
+        service_tier_map=SERVICE_TIER_MAP,
+        locked_services=locked_services,
+    )
 
 
 @app.route("/buy/<service_name>")
@@ -298,6 +340,14 @@ def buy(service_name):
     # If service doesn't exist, redirect to services page
     if service_name not in SERVICES_BY_TITLE:
         return redirect(url_for("services"))
+
+    current_tier = selected_bundle_tier()
+    if not service_is_unlocked(service_name, current_tier):
+        required_tier = SERVICE_TIER_MAP.get(service_name)
+        session["celebration"] = (
+            f"{service_name} unlocks at {required_tier} tier. Keep growing to purchase it."
+        )
+        return redirect(request.args.get("next") or url_for("tree"))
 
     # Add service to purchased list if not already there
     purchased = session.get("purchased", [])
