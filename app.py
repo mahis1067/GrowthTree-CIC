@@ -248,15 +248,18 @@ def quiz():
         # Save user answers from form
         answers = request.form.to_dict()
         session["quiz_answers"] = answers
-        # Map journey stage to membership years
-        stage_to_years = {
-            "Just getting started": "0",
-            "Implementing projects": "1",
-            "Leading initiatives": "2",
-            "Want to shape sector strategy": "3",
-            "Other": "0",
-        }
-        session["membership_years"] = stage_to_years.get(answers.get("journey_stage"), "0")
+        # Keep membership/tier baseline from selected bundle so quiz answers
+        # do not unlock higher tiers prematurely.
+        if not session.get("selected_bundle") and "membership_years" not in session:
+            stage_to_years = {
+                "Just getting started": "0",
+                "Implementing projects": "1",
+                "Leading initiatives": "2",
+                "Want to shape sector strategy": "3",
+                "Other": "0",
+            }
+            session["membership_years"] = stage_to_years.get(answers.get("journey_stage"), "0")
+
         # Generate growth tree based on answers
         session["growth_tree"] = generate_growth_tree(answers)
 
