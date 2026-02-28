@@ -1,35 +1,27 @@
 {% extends "base.html" %}
-{% block title %}Invoice - CIC{% endblock %} <!-- Set the page title -->
+{% block title %}My Services - CIC{% endblock %}
 {% block content %}
 <section class="card">
-    <h1>Invoice</h1> <!-- Page heading -->
-    {% if items %} <!-- Check if there are any purhased services -->
+    <h1>My Services</h1>
+    {% if items %}
     <table>
-        <!-- Table header -->
         <thead>
             <tr>
-                <th>Service</th> <!-- Column for service name -->
-                <th>Price</th> <!-- Column for service price -->
+                <th>Service</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
-            {% for item in items %} <!-- Loop thorugh each purchased service -->
+            {% for item in items %}
             <tr>
-                <td>{{ item.title }}</td> <!-- Display service title -->
-                <td>${{ item.price }}</td> <!-- Display service price -->
+                <td>{{ item.title }}</td>
+                <td>Active</td>
             </tr>
             {% endfor %}
         </tbody>
-        <!-- Table footer showing toal cost -->
-        <tfoot>
-            <tr>
-                <td>Total</td>
-                <td>${{ total }}</td> <!-- Display total price -->
-            </tr>
-        </tfoot>
     </table>
-    {% else %} <!-- If no services have been purchased -->
-    <p>No services purchased yet.</p>
+    {% else %}
+    <p>No services added yet.</p>
     {% endif %}
 </section>
 {% endblock %}
