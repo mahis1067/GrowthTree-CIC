@@ -1,5 +1,5 @@
-:root { --bg:#f3f7f4; --brand:#1f6f5f; --card:#fff; }
-*{box-sizing:border-box;font-family:Arial,sans-serif}
+:root { --bg:#f3f7f4; --brand:#f4a331; --card:#fff; }
+*{box-sizing:border-box;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif}
 
 body{
     margin:0;
@@ -8,13 +8,13 @@ body{
 .sidebar{
         width:240px;
         min-height:100vh;
-        background:#0f3f35;
+        background:#84bd00;
         color:#fff;padding:
         20px;position:fixed}
 
 .sidebar a{
             display:block;
-            color:#dff5ef;
+            color:#ffff;
             text-decoration:none;
             padding:8px 0}
 
@@ -40,7 +40,7 @@ body{
     cursor:pointer}
 
 .btn-secondary{
-                background:#4e7f77}
+                background:#00b4e2}
 .actions{
         display:flex;
         gap:12px;
@@ -59,7 +59,7 @@ label{
 select{
         padding:8px;
         border-radius:6px;
-        border:1px solid #c8d4d0}
+        border:1px solid #ffff}
 
 .row-between{
              display:flex;
@@ -67,10 +67,9 @@ select{
              align-items:center}
 
 .tier-pill{
-            background:#e0f4ef;
-            color:#12473d;
+            background:#00b4e2;
+            color:#ffff;
             padding:6px 10px;
-            border:1px solid transparent;
             border-radius:999px;
             font-weight:700}
 
@@ -96,7 +95,7 @@ select{
                 display:grid;
                 grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
 .service-card{background:#f8fbfa;border-radius:8px;padding:12px;border:1px solid #deece8}
-.owned{font-weight:700;color:#1f6f5f}
+.owned{font-weight:700;color:#00b4e2}
 .meter-wrap{text-align:center;margin:10px 0 20px}
 .meter{width:110px;height:110px;border-radius:50%;margin:auto;background:conic-gradient(var(--brand) var(--progress), #dbe8e4 0);display:grid;place-items:center;position:relative}
 .meter::after{content:"";position:absolute;width:78px;height:78px;background:#fff;border-radius:50%}
@@ -121,7 +120,7 @@ th,td{padding:8px;border-bottom:1px solid #dfebe6;text-align:left}
 .year-tree-list{list-style:none;margin:0;padding:0;display:grid;gap:18px;position:relative}
 .year-node{position:relative;width:calc(50% - 24px);background:#f8fbfa;border:1px solid #deece8;border-radius:12px;padding:12px}
 .year-node::before{content:"";position:absolute;top:20px;width:26px;height:4px;background:#7a4b2a}
-.year-node-title{font-weight:700;margin-bottom:8px;color:#12473d}
+.year-node-title{font-weight:700;margin-bottom:8px;color:#00b4e2}
 .service-leaves{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .service-leaf{position:relative;padding-left:14px}
 .service-leaf::before{content:"";position:absolute;left:0;top:14px;width:10px;height:2px;background:#88a59e}
@@ -141,7 +140,7 @@ th,td{padding:8px;border-bottom:1px solid #dfebe6;text-align:left}
 .tree-page{display:grid;gap:18px}
 .tree-header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .tree-header h1{margin:0 0 4px}
-.tree-header p{margin:0;color:#4f6b64}
+.tree-header p{margin:0;color:#00b4e2}
 .header-actions{display:flex;gap:10px;flex-wrap:wrap}
 .tree-card{overflow:hidden}
 .small-meter{margin:0}
@@ -153,32 +152,14 @@ th,td{padding:8px;border-bottom:1px solid #dfebe6;text-align:left}
 .service-item{background:#fff;border:1px solid #d8e4df;border-radius:8px;padding:10px}
 .service-item p{margin:6px 0}
 .service-item-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.service-item-purchased{background:#e8f7ef;border-color:#8dd6b3}
+.service-item-purchased{background:#deff90;border-color:#ffff}
 .stats-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.stat-card p{margin:0;color:#4f6b64}
-.stat-card h2{margin:6px 0 0;color:#1f6f5f}
+.stat-card p{margin:0;color:#f4a331}
+.stat-card h2{margin:6px 0 0;color:#00b4e2}
 
 @media (max-width: 1000px){
   .year-sections,.stats-grid{grid-template-columns:1fr}
   .plotly-tree{height:360px}
-}
-
-.tier-page{margin-bottom:16px}
-.tier-bundles h2{margin:0 0 12px}
-.tier-columns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.tier-card{border:1px solid transparent}
-.tier-card h3{margin:0}
-.tier-summary{margin:4px 0 10px;color:#4f6b64;font-weight:600}
-.bundle-services{display:grid;gap:8px}
-.bundle-services details{background:#f8fbfa;border:1px solid #deece8;border-radius:8px;padding:8px}
-.bundle-services summary{cursor:pointer;font-weight:700}
-.bundle-services ul{margin:8px 0 0;padding-left:18px}
-.tier-price{margin-top:14px;font-size:34px;font-weight:700;color:#12473d}
-
-.tree-layout{display:grid;grid-template-columns:1fr;gap:12px;align-items:stretch;margin:10px 0 16px}
-
-@media (max-width: 1000px){
-  .tier-columns,.tree-layout{grid-template-columns:1fr}
 }
 
 
