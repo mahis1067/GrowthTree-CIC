@@ -228,10 +228,14 @@ def generate_growth_tree(answers):
 
 def subservices_for_tree(tree, recommended_subservices, current_tier, purchased_services):
     tree_subservices = default_tree()
+    max_recommendations_per_year = 3
 
     for year in YEAR_ORDER:
         seen = set()
         for service_name in tree.get(year, []):
+            if len(tree_subservices[year]) >= max_recommendations_per_year:
+                break
+
             matched = recommended_subservices.get(service_name)
             if matched:
                 candidates = matched
@@ -244,6 +248,8 @@ def subservices_for_tree(tree, recommended_subservices, current_tier, purchased_
             added = service_name in purchased_services
 
             for subservice in candidates:
+                if len(tree_subservices[year]) >= max_recommendations_per_year:
+                    break
                 if not subservice:
                     continue
 
