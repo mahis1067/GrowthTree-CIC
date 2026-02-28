@@ -108,7 +108,7 @@
         line: { color: '#0f3f35', width: 1.5 }
       },
       customdata: servicePoints,
-      hovertemplate: 'Subservice node<extra></extra>',
+      hovertemplate: '<extra></extra>',
       showlegend: false
     }
   ];
@@ -118,7 +118,25 @@
     paper_bgcolor: 'rgba(0,0,0,0)',
     plot_bgcolor: 'rgba(0,0,0,0)',
     xaxis: { visible: false },
-    yaxis: { visible: false }
+    yaxis: { visible: false },
+    annotations: [
+      {
+        x: -0.7,
+        y: 1.9,
+        text: 'Start with these Year 1 services',
+        showarrow: true,
+        arrowhead: 2,
+        arrowsize: 1,
+        arrowwidth: 2,
+        arrowcolor: '#f4a331',
+        ax: 90,
+        ay: -45,
+        font: { color: '#8a5b0b', size: 12 },
+        bgcolor: 'rgba(255,255,255,0.9)',
+        bordercolor: '#f4a331',
+        borderwidth: 1
+      }
+    ]
   }, {displayModeBar: false, responsive: true});
 
   const plot = document.getElementById('plotly-tree');

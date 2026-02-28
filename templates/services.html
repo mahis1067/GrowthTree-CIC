@@ -2,22 +2,25 @@
 {% block title %}Services - CIC{% endblock %}
 {% block content %}
 <section class="card">
-    <h1>Available Services</h1>
-    <div class="service-list">
-        {% for service in services %}
-        <article class="service-card">
-            <h3>{{ service.title }}</h3>
-            <p>{{ service.description }}</p>
-            {% if service.title in purchased %}
-                <span class="owned">Added</span>
-            {% else %}
-                {% if service.title in locked_services %}
-                    <p class="muted">Unlocks at {{ service_tier_map.get(service.title, 'higher') }} tier</p>
-                    <a class="btn btn-disabled" aria-disabled="true" href="#">Add service bundle</a>
-                {% else %}
-                    <a class="btn" href="{{ url_for('buy', service_name=service.title, next=url_for('services')) }}">Add service bundle</a>
-                {% endif %}
-            {% endif %}
+    <h1>Service Bundle Catalog</h1>
+    <p class="muted">This page is a visual reference of all tier bundles and the subservices included in each bundle.</p>
+
+    <div class="bundle-catalog">
+        {% for tier in tier_bundles %}
+        <article class="bundle-card">
+            <h2>{{ tier.name }} Bundle</h2>
+            <p class="muted">{{ tier.summary }}</p>
+
+            {% for service in tier.services %}
+            <div class="service-card bundle-service">
+                <h3>{{ service.title }}</h3>
+                <ul>
+                    {% for subservice in service.subservices %}
+                    <li>{{ subservice }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
         </article>
         {% endfor %}
     </div>
