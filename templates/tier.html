@@ -13,14 +13,14 @@
         <li>Services added: {{ purchased_count }}</li>
         <li>Selected bundle: {{ selected_bundle or 'Not selected yet' }}</li>
     </ul>
-    {% if bundle_purchase %}
-    <p><strong>Current bundle:</strong> {{ bundle_purchase.name }} (${{ bundle_purchase.price }})</p>
+    {% if selected_bundle %}
+    <p><strong>Current bundle:</strong> {{ selected_bundle }} (${{ current_bundle_price }})</p>
     {% endif %}
     <p>Buy a bundle to unlock service tiers, then take the quiz for recommendations.</p>
 </section>
 
 <section class="tier-bundles">
-    <h2>Buy your bundle</h2>
+    <h2>Buy your bundle (Bronze $300, Silver $900, Gold $1200)</h2>
     <div class="tier-columns">
         {% for bundle in tier_bundles %}
         <article class="card tier-card tier-{{ bundle.name|lower }}">

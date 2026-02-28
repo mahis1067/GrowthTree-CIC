@@ -44,8 +44,9 @@ SERVICE_TIER_MAP = {
     for service in tier.get("services", [])
 }
 BUNDLE_PRICE_MAP = {
-    tier.get("name"): tier.get("price", 0)
-    for tier in TIER_BUNDLES.get("tiers", [])
+    "Bronze": 300,
+    "Silver": 900,
+    "Gold": 1200,
 }
 BUNDLE_SERVICE_DETAILS = {
     service.get("title"): service
@@ -483,6 +484,7 @@ def tier():
         selected_bundle=session.get("selected_bundle"),
         bundle_price_map=BUNDLE_PRICE_MAP,
         bundle_purchase=session.get("bundle_purchase"),
+        current_bundle_price=BUNDLE_PRICE_MAP.get(session.get("selected_bundle"), 0),
     )
 
 
