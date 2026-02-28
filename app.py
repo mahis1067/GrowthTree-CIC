@@ -38,6 +38,25 @@ RECOMMENDATION_RULES = load_recommendation_rules()
 SERVICES_BY_TITLE = {service["title"]: service for service in SERVICES}
 TIER_ORDER = ["Bronze", "Silver", "Gold"]
 YEAR_ORDER = ["year1", "year2", "year3"]
+SERVICE_TIER_MAP = {
+    service.get("title"): tier.get("name")
+    for tier in TIER_BUNDLES.get("tiers", [])
+    for service in tier.get("services", [])
+}
+BUNDLE_PRICE_MAP = {
+    "Bronze": 300,
+    "Silver": 900,
+    "Gold": 1200,
+}
+BUNDLE_SERVICE_DETAILS = {
+    service.get("title"): service
+    for tier in TIER_BUNDLES.get("tiers", [])
+    for service in tier.get("services", [])
+}
+TIER_SUMMARY_MAP = {
+    tier.get("name"): tier.get("summary", "General Services")
+    for tier in TIER_BUNDLES.get("tiers", [])
+}
 
 
 def default_tree():
@@ -83,6 +102,30 @@ def collect_recommended_services(answers, bundled_services):
 
     return service_hits
 
+
+
+def collect_recommended_subservices(answers, bundled_services):
+    option_subservice_map = RECOMMENDATION_RULES.get("option_subservice_map", {})
+    bundled_titles = {service.get("title") for service in bundled_services}
+    collected = {}
+
+    for field, field_map in option_subservice_map.items():
+        answer = answers.get(field)
+        if not answer:
+            continue
+
+        for item in field_map.get(answer, []):
+            service_title = item.get("service")
+            subservice = item.get("subservice")
+            if not service_title or not subservice or service_title not in bundled_titles:
+                continue
+
+            entries = collected.setdefault(service_title, [])
+            if subservice not in entries:
+                entries.append(subservice)
+
+    return collected
+
 def accessible_tiers(current_tier):
     if current_tier not in TIER_ORDER:
         return ["Bronze"]
@@ -114,11 +157,41 @@ def bundle_services_for_tier(current_tier):
     return bundled
 
 
+def all_bundle_services():
+    bundled = []
+    for tier in TIER_BUNDLES.get("tiers", []):
+        for service in tier.get("services", []):
+            enriched = dict(service)
+            enriched["tier"] = tier.get("name")
+            bundled.append(enriched)
+    return bundled
+
+
+def bundle_service_titles_for_tier(current_tier):
+    unlocked = set(accessible_tiers(current_tier))
+    titles = []
+    for tier in TIER_BUNDLES.get("tiers", []):
+        if tier.get("name") not in unlocked:
+            continue
+        for service in tier.get("services", []):
+            title = service.get("title")
+            if title and title not in titles:
+                titles.append(title)
+    return titles
+
+
+def service_is_unlocked(service_name, current_tier):
+    required_tier = SERVICE_TIER_MAP.get(service_name)
+    if not required_tier:
+        return True
+    return required_tier in accessible_tiers(current_tier)
+
+
 def generate_growth_tree(answers):
     # Start with an empty tree
     tree = default_tree()
     current_tier = selected_bundle_tier()
-    bundled_services = bundle_services_for_tier(current_tier)
+    bundled_services = all_bundle_services()
     service_hits = collect_recommended_services(answers, bundled_services)
     service_lookup = {service["title"]: service for service in bundled_services}
     tier_rank = {tier: index for index, tier in enumerate(TIER_ORDER)}
@@ -151,17 +224,57 @@ def generate_growth_tree(answers):
     return merge_purchased_into_tree(tree, purchased)
 
 
-def calculate_tier():
-    # Get number of years and purchased services from session
-    years_with_cic = int(session.get("membership_years", 0))
-    purchased_count = len(session.get("purchased", []))
 
-    #Determine tier based on years or purchases
-    if years_with_cic >= 3 or purchased_count >= 6:
+
+def subservices_for_tree(tree, recommended_subservices, current_tier, purchased_services):
+    tree_subservices = default_tree()
+
+    for year in YEAR_ORDER:
+        seen = set()
+        for service_name in tree.get(year, []):
+            matched = recommended_subservices.get(service_name)
+            if matched:
+                candidates = matched
+            else:
+                candidates = BUNDLE_SERVICE_DETAILS.get(service_name, {}).get("subservices", [])
+
+            required_tier = SERVICE_TIER_MAP.get(service_name, "Bronze")
+            service_group = TIER_SUMMARY_MAP.get(required_tier, "General Services")
+            unlocked = service_is_unlocked(service_name, current_tier)
+            added = service_name in purchased_services
+
+            for subservice in candidates:
+                if not subservice:
+                    continue
+
+                dedupe_key = f"{service_name}::{subservice}"
+                if dedupe_key in seen:
+                    continue
+
+                tree_subservices[year].append(
+                    {
+                        "service": service_name,
+                        "subservice": subservice,
+                        "group": service_group,
+                        "required_tier": required_tier,
+                        "is_locked": not unlocked and not added,
+                        "is_added": added,
+                        "use_url": url_for("buy", service_name=service_name),
+                    }
+                )
+                seen.add(dedupe_key)
+
+    return tree_subservices
+
+def calculate_tier():
+    # Tier progression is based on time only.
+    years_with_cic = int(session.get("membership_years", 0))
+
+    if years_with_cic >= 3:
         return "Gold"
-    if years_with_cic >= 2 or purchased_count >= 3:
+    if years_with_cic >= 2:
         return "Silver"
-    if years_with_cic >= 1 or purchased_count >= 1:
+    if years_with_cic >= 1:
         return "Bronze"
     return "New Member"
 
@@ -226,17 +339,24 @@ def quiz():
         # Save user answers from form
         answers = request.form.to_dict()
         session["quiz_answers"] = answers
-        # Map journey stage to membership years
-        stage_to_years = {
-            "Just getting started": "0",
-            "Implementing projects": "1",
-            "Leading initiatives": "2",
-            "Want to shape sector strategy": "3",
-            "Other": "0",
-        }
-        session["membership_years"] = stage_to_years.get(answers.get("journey_stage"), "0")
+        # Keep membership/tier baseline from selected bundle so quiz answers
+        # do not unlock higher tiers prematurely.
+        if not session.get("selected_bundle") and "membership_years" not in session:
+            stage_to_years = {
+                "Just getting started": "0",
+                "Implementing projects": "1",
+                "Leading initiatives": "2",
+                "Want to shape sector strategy": "3",
+                "Other": "0",
+            }
+            session["membership_years"] = stage_to_years.get(answers.get("journey_stage"), "0")
+
         # Generate growth tree based on answers
         session["growth_tree"] = generate_growth_tree(answers)
+        session["recommended_subservices"] = collect_recommended_subservices(
+            answers,
+            all_bundle_services(),
+        )
 
         # Update tier and check if tier advanced
         new_tier = calculate_tier()
@@ -265,24 +385,37 @@ def tree():
 
     # Get and remove celebratory message
     celebration = session.pop("celebration", None)
-    # Get purchased items and calculate total spent
+    # Get added services
     purchased_names = session.get("purchased", [])
-    purchased_items = [SERVICES_BY_TITLE[name] for name in purchased_names if name in SERVICES_BY_TITLE]
-    total_spent = sum(item["price"] for item in purchased_items)
 
     # Render tree page with all relevant data
     current_tier = selected_bundle_tier()
+    locked_services = {
+        service_name
+        for service_name in tree_data["year1"] + tree_data["year2"] + tree_data["year3"]
+        if service_name not in purchased_names and not service_is_unlocked(service_name, current_tier)
+    }
+    recommended_subservices = session.get("recommended_subservices", {})
+    tree_subservices = subservices_for_tree(
+        tree_data,
+        recommended_subservices,
+        current_tier,
+        set(purchased_names),
+    )
+
     return render_template(
         "tree.html",
-        tree=tree_data,
+        tree=tree_subservices,
         tier=current_tier,
         progress=tier_progress_percent(),
         services_map=SERVICES_BY_TITLE,
         purchased=set(purchased_names),
         purchased_count=len(purchased_names),
-        total_spent=total_spent,
-        discount=current_discount_percent(),
+        unlocked_count=len(SERVICE_TIER_MAP) - len(locked_services),
         celebration=celebration,
+        locked_services=locked_services,
+        service_tier_map=SERVICE_TIER_MAP,
+        recommended_subservices=recommended_subservices,
     )
 
 
@@ -290,7 +423,20 @@ def tree():
 def services():
     # Show all services and mark purchased ones
     purchased = set(session.get("purchased", []))
-    return render_template("services.html", services=SERVICES, purchased=purchased)
+    current_tier = selected_bundle_tier()
+    locked_services = {
+        service.get("title")
+        for service in SERVICES
+        if not service_is_unlocked(service.get("title"), current_tier)
+    }
+    return render_template(
+        "services.html",
+        services=SERVICES,
+        purchased=purchased,
+        tier=current_tier,
+        service_tier_map=SERVICE_TIER_MAP,
+        locked_services=locked_services,
+    )
 
 
 @app.route("/buy/<service_name>")
@@ -298,6 +444,14 @@ def buy(service_name):
     # If service doesn't exist, redirect to services page
     if service_name not in SERVICES_BY_TITLE:
         return redirect(url_for("services"))
+
+    current_tier = selected_bundle_tier()
+    if not service_is_unlocked(service_name, current_tier):
+        required_tier = SERVICE_TIER_MAP.get(service_name)
+        session["celebration"] = (
+            f"{service_name} unlocks at {required_tier} tier. Keep growing to add it."
+        )
+        return redirect(request.args.get("next") or url_for("tree"))
 
     # Add service to purchased list if not already there
     purchased = session.get("purchased", [])
@@ -318,28 +472,36 @@ def buy(service_name):
     if old_tier and old_tier != new_tier:
         session["celebration"] = f"Great work! You reached {new_tier} tier."
 
-    # Rebuild recommendations when tier unlocks new service levels.
-    if "quiz_answers" in session:
-        session["growth_tree"] = generate_growth_tree(session["quiz_answers"])
+    # Keep recommendation plan stable after adding services.
 
     # Redirect back to previous page or tree
     return redirect(request.args.get("next") or url_for("tree"))
 
 
-@app.route("/select-bundle/<tier_name>")
-def select_bundle(tier_name):
-    # user chooses the starting bundle before taking the quiz
+@app.route("/buy-bundle/<tier_name>")
+def buy_bundle(tier_name):
+    # User buys/selects a starting bundle before taking the quiz
     if tier_name not in TIER_ORDER:
         return redirect(url_for("tier"))
 
     session["selected_bundle"] = tier_name
-    session["tier"] = tier_name
+    bundle_price = BUNDLE_PRICE_MAP.get(tier_name, 0)
+    session["bundle_purchase"] = {"name": tier_name, "price": bundle_price}
+    session["celebration"] = f"{tier_name} bundle added for ${bundle_price}."
 
     tier_to_years = {"Bronze": "1", "Silver": "2", "Gold": "3"}
     session["membership_years"] = tier_to_years.get(tier_name, "0")
+    session["tier"] = calculate_tier()
 
-    if "quiz_answers" in session:
-        session["growth_tree"] = generate_growth_tree(session["quiz_answers"])
+    purchased = session.get("purchased", [])
+    for service_name in bundle_service_titles_for_tier(tier_name):
+        if service_name not in purchased:
+            purchased.append(service_name)
+    session["purchased"] = purchased
+
+    # Keep recommendation plan stable when users add more bundles.
+    if "growth_tree" in session:
+        session["growth_tree"] = merge_purchased_into_tree(session["growth_tree"], purchased)
 
     return redirect(url_for("quiz"))
 
@@ -358,15 +520,17 @@ def tier():
         general_bundle=RECOMMENDATION_RULES.get("general_bundle", []),
         has_quiz=bool(session.get("quiz_answers")),
         selected_bundle=session.get("selected_bundle"),
+        bundle_price_map=BUNDLE_PRICE_MAP,
+        bundle_purchase=session.get("bundle_purchase"),
+        current_bundle_price=BUNDLE_PRICE_MAP.get(session.get("selected_bundle"), 0),
     )
 
 
 @app.route("/invoice")
 def invoice():
-    # Generate invoice with purchased services and total cost
+    # Show added services (no price tracking)
     items = purchased_details()
-    total = sum(item["price"] for item in items)
-    return render_template("invoice.html", items=items, total=total)
+    return render_template("invoice.html", items=items)
 
 
 if __name__ == "__main__":
