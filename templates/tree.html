@@ -27,7 +27,6 @@
 
         <div class="tree-layout">
             <div id="plotly-tree" class="plotly-tree" aria-label="Growth tree chart"></div>
-            
         </div>
 
         <div class="year-sections">
@@ -36,20 +35,9 @@
                 <h3>{{ year }}</h3>
                 <ul>
                     {% if items %}
-                        {% for service_name in items %}
-                        {% set detail = services_map.get(service_name, {}) %}
-                        <li class="service-item {% if service_name in purchased %}service-item-purchased{% endif %}">
-                            <div class="service-item-head">
-                                <strong>{{ service_name }}</strong>
-                                {% if service_name in purchased %}
-                                <span class="owned">Purchased</span>
-                                {% endif %}
-                            </div>
-                            <p>{{ detail.description or 'Recommended service for your roadmap.' }}</p>
-                            {% if detail.price %}<p><strong>${{ detail.price }}</strong></p>{% endif %}
-                            {% if service_name not in purchased %}
-                            <a class="btn" href="{{ url_for('buy', service_name=service_name) }}">Buy service</a>
-                            {% endif %}
+                        {% for subservice in items %}
+                        <li class="service-item">
+                            <p>{{ subservice }}</p>
                         </li>
                         {% endfor %}
                     {% else %}
@@ -62,16 +50,15 @@
     </div>
 
     <div class="stats-grid">
-        <div class="card stat-card"><p>Services Purchased</p><h2>{{ purchased_count }}</h2></div>
-        <div class="card stat-card"><p>Total Investment</p><h2>${{ total_spent }}</h2></div>
-        <div class="card stat-card"><p>Current Discount</p><h2>{{ discount }}%</h2></div>
+        <div class="card stat-card"><p>Services Added</p><h2>{{ purchased_count }}</h2></div>
+        <div class="card stat-card"><p>Unlocked Services</p><h2>{{ unlocked_count }}</h2></div>
+        <div class="card stat-card"><p>Current Tier</p><h2>{{ tier }}</h2></div>
     </div>
 </section>
 
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <script>
 (function () {
-  const purchased = {{ purchased|list|tojson }};
   const tree = {{ tree|tojson }};
   const yearNodes = [
     { key: 'year1', x: 0, y: 3, label: 'Year 1' },
@@ -90,10 +77,8 @@
       const spread = count === 1 ? 0 : ((idx / (count - 1)) - 0.5) * 1.4;
       servicePoints.push({
         name,
-        year: yearNode.label,
         x: yearNode.x + spread,
-        y: yearNode.y - 1.1,
-        purchased: purchased.includes(name)
+        y: yearNode.y - 1.1
       });
       linesX.push(yearNode.x, yearNode.x + spread, null);
       linesY.push(yearNode.y, yearNode.y - 1.1, null);
@@ -131,8 +116,8 @@
       textposition: 'bottom center',
       marker: {
         size: 18,
-        color: servicePoints.map(p => p.purchased ? '#22a06b' : '#8fc6b7'),
-        line: { color: '#0f3f35', width: 1 }
+        color: '#ffd400',
+        line: { color: '#c37d00', width: 2 }
       },
       hovertemplate: '%{text}<extra></extra>',
       showlegend: false
