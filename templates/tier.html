@@ -10,7 +10,7 @@
     </div>
     <ul>
         <li>Years with CIC: {{ years_with_cic }}</li>
-        <li>Services purchased: {{ purchased_count }}</li>
+        <li>Services added: {{ purchased_count }}</li>
         <li>Selected bundle: {{ selected_bundle or 'Not selected yet' }}</li>
     </ul>
     <p>Choose a bundle first, then take the quiz. Recommendations are limited to your chosen bundle scope.</p>
@@ -23,8 +23,7 @@
         <article class="card tier-card tier-{{ bundle.name|lower }}">
             <h3>{{ bundle.name }} Tier</h3>
             <p class="tier-summary">{{ bundle.summary }}</p>
-            <p><strong>${{ bundle.price }}</strong> initial membership</p>
-            <p>
+                        <p>
                 {% if bundle.name == 'Bronze' %}
                 Recommends Bronze services first, with higher-tier services introduced as you upgrade.
                 {% elif bundle.name == 'Silver' %}
@@ -80,7 +79,6 @@
                 {% endfor %}
             </div>
 
-            <div class="tier-price">${{ bundle.price }}</div>
         </article>
         {% endfor %}
     </div>

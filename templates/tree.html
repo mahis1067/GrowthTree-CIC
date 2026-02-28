@@ -27,7 +27,7 @@
 
         <div class="tree-layout">
             <div id="plotly-tree" class="plotly-tree" aria-label="Growth tree chart"></div>
-            
+
         </div>
 
         <div class="year-sections">
@@ -42,13 +42,25 @@
                             <div class="service-item-head">
                                 <strong>{{ service_name }}</strong>
                                 {% if service_name in purchased %}
-                                <span class="owned">Purchased</span>
+                                <span class="owned">Added</span>
                                 {% endif %}
                             </div>
                             <p>{{ detail.description or 'Recommended service for your roadmap.' }}</p>
-                            {% if detail.price %}<p><strong>${{ detail.price }}</strong></p>{% endif %}
+                            {% set matched_items = recommended_subservices.get(service_name, []) %}
+                            {% if matched_items %}
+                            <ul>
+                                {% for recommendation in matched_items %}
+                                <li class="muted">{{ recommendation }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
                             {% if service_name not in purchased %}
-                            <a class="btn" href="{{ url_for('buy', service_name=service_name) }}">Buy service</a>
+                                {% if service_name in locked_services %}
+                                <span class="muted">Unlocks at {{ service_tier_map.get(service_name, 'higher') }} tier</span>
+                                <a class="btn btn-disabled" aria-disabled="true" href="#">Add service</a>
+                                {% else %}
+                                <a class="btn" href="{{ url_for('buy', service_name=service_name) }}">Add service</a>
+                                {% endif %}
                             {% endif %}
                         </li>
                         {% endfor %}
@@ -62,9 +74,9 @@
     </div>
 
     <div class="stats-grid">
-        <div class="card stat-card"><p>Services Purchased</p><h2>{{ purchased_count }}</h2></div>
-        <div class="card stat-card"><p>Total Investment</p><h2>${{ total_spent }}</h2></div>
-        <div class="card stat-card"><p>Current Discount</p><h2>{{ discount }}%</h2></div>
+        <div class="card stat-card"><p>Services Added</p><h2>{{ purchased_count }}</h2></div>
+        <div class="card stat-card"><p>Unlocked Services</p><h2>{{ unlocked_count }}</h2></div>
+        <div class="card stat-card"><p>Current Tier</p><h2>{{ tier }}</h2></div>
     </div>
 </section>
 
@@ -130,9 +142,12 @@
       text: servicePoints.map(p => p.name),
       textposition: 'bottom center',
       marker: {
-        size: 18,
-        color: servicePoints.map(p => p.purchased ? '#22a06b' : '#8fc6b7'),
-        line: { color: '#0f3f35', width: 1 }
+        size: servicePoints.map(p => p.purchased ? 24 : 14),
+        color: servicePoints.map(p => p.purchased ? '#ffd400' : '#7fa89d'),
+        line: {
+          color: servicePoints.map(p => p.purchased ? '#c37d00' : '#0f3f35'),
+          width: servicePoints.map(p => p.purchased ? 3 : 1)
+        }
       },
       hovertemplate: '%{text}<extra></extra>',
       showlegend: false
